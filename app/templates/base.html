@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Traffic Sign Recognition System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>Traffic Sign Recognition System</h1>
+            <p>AI-powered traffic sign detection and guidance</p>
+        </div>
+
+        <!-- TABS NAVIGATION -->
+        {% block tabs %}{% endblock %}
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            {% block content %}{% endblock %}
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>© 2026 Traffic Sign Recognition System</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
