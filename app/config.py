@@ -1,5 +1,5 @@
 """
-Flask Configuration
+Cấu hình Flask
 """
 
 import os

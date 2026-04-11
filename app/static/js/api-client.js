@@ -1,9 +1,9 @@
 /* ============================================
-   API CLIENT - Handle backend communications
+   API CLIENT - Xử lý liên lạc phía sau
    ============================================ */
 
 /**
- * Make API call with error handling
+ * Thực hiện cuộc gọi API với xử lý lỗi
  */
 async function apiCall(method, endpoint, data = null) {
     try {
@@ -27,25 +27,25 @@ async function apiCall(method, endpoint, data = null) {
 
         return await response.json();
     } catch (error) {
-        console.error(`❌ API Error [${method} ${endpoint}]:`, error.message);
+        console.error(`❌ Lỗi API [${method} ${endpoint}]:`, error.message);
         throw error;
     }
 }
 
 /**
- * Upload file to API
+ * Tải tệp lên API
  */
 async function uploadFile(endpoint, fileInput) {
     try {
         const file = fileInput.files[0];
         if (!file) {
-            throw new Error('No file selected');
+            throw new Error('Không có tệp nào được chọn');
         }
 
-        // Validate file size (10MB for images, 500MB for videos)
+        // Xác thực kích thước tệp (10MB cho ảnh, 500MB cho video)
         const maxSize = endpoint.includes('video') ? 500 * 1024 * 1024 : 10 * 1024 * 1024;
         if (file.size > maxSize) {
-            throw new Error(`File too large. Maximum size: ${Math.round(maxSize / 1024 / 1024)}MB`);
+            throw new Error(`Tệp quá lớn. Kích thước tối đa: ${Math.round(maxSize / 1024 / 1024)}MB`);
         }
 
         const formData = new FormData();
@@ -63,13 +63,13 @@ async function uploadFile(endpoint, fileInput) {
 
         return await response.json();
     } catch (error) {
-        console.error(`❌ Upload Error [${endpoint}]:`, error.message);
+        console.error(`❌ Lỗi Tải lên [${endpoint}]:`, error.message);
         throw error;
     }
 }
 
 /**
- * Poll API for status updates
+ * Thăm dò API để cập nhật trạng thái
  */
 async function pollStatus(endpoint, interval = 1000, maxAttempts = 300) {
     let attempts = 0;
@@ -82,7 +82,7 @@ async function pollStatus(endpoint, interval = 1000, maxAttempts = 300) {
                 if (response.status === 'completed' || response.status === 'success') {
                     resolve(response);
                 } else if (attempts >= maxAttempts) {
-                    reject(new Error('Poll timeout exceeded'));
+                    reject(new Error('Vượt quá thời gian chờ cuộc thăm dò'));
                 } else {
                     attempts++;
                     setTimeout(poll, interval);
@@ -94,6 +94,7 @@ async function pollStatus(endpoint, interval = 1000, maxAttempts = 300) {
         
         poll();
     });
+}
 }
 
 /**
