@@ -1,75 +1,75 @@
 /* ============================================
-   TAB SWITCHING LOGIC
+   LOGIC CHUYỂN ĐỔI TAB
    ============================================ */
 
 /**
- * Switch tab with smooth animation
+ * Chuyển tab với hoạt ảnh trơn tru
  */
 function switchTab(tabName) {
-    // Get all tabs and buttons
+    // Lấy tất cả tab và nút
     const tabs = document.querySelectorAll('.tab-content');
     const buttons = document.querySelectorAll('.tab-btn');
 
-    // Find the target tab
+    // Tìm tab mục tiêu
     const targetTab = document.getElementById(tabName);
     const targetButton = Array.from(buttons).find(btn => 
         btn.textContent.toLowerCase().includes(tabName.replace('-tab', ''))
     );
 
-    // Handle invalid tab
+    // Xử lý tab không hợp lệ
     if (!targetTab) {
-        console.error(`❌ Tab not found: ${tabName}`);
+        console.error(`❌ Không tìm thấy tab: ${tabName}`);
         return;
     }
 
-    // Remove active class from all tabs and buttons
+    // Gỡ bỏ lớp Đang hoạt động khỏi tất cả tab và nút
     tabs.forEach(tab => {
         tab.classList.remove('active');
-        // Trigger any cleanup
+        // Kích hoạt bất kỳ dọn dẹp nào
         if (tab.id === 'webcam-tab' && appState && appState.webcamActive) {
-            // Will be handled by stopWebcam
+            // Sẽ được xử lý bởi stopWebcam
         }
     });
     buttons.forEach(btn => btn.classList.remove('active'));
 
-    // Add active class to target
+    // Thêm lớp Đang hoạt động vào mục tiêu
     targetTab.classList.add('active');
     if (targetButton) {
         targetButton.classList.add('active');
     }
 
-    // Update app state
+    // Cập nhật trạng thái ứng dụng
     if (appState) {
         appState.currentTab = tabName;
     }
 
-    // Stop webcam if switching away from webcam tab
+    // Dừng webcam nếu chuyển đi khỏi tab webcam
     if (tabName !== 'webcam-tab' && appState && appState.webcamActive) {
         stopWebcam();
     }
 
-    console.log(`📑 Tab switched to: ${tabName}`);
+    console.log(`📑 Tab đã chuyển sang: ${tabName}`);
 
-    // Scroll to top of content
+    // Xuôn lại đặt vị trí nội dung
     document.querySelector('.main-content').scrollTop = 0;
 }
 
-// Add tab button click handlers
+// Thêm trình xử lý sự kiện nhấp nút tab
 document.addEventListener('DOMContentLoaded', function() {
     const tabButtons = document.querySelectorAll('.tab-btn');
     
     tabButtons.forEach((button, index) => {
-        // Determine which tab this button corresponds to
+        // Xác định tab nào mà nút này tương ứng với
         const tabNames = ['image-tab', 'video-tab', 'webcam-tab'];
         
         button.addEventListener('click', function(event) {
             event.preventDefault();
             
-            // Get the tab name from button position
+            // Lấy tên tab từ vị trí nút
             const tabName = tabNames[Array.from(tabButtons).indexOf(button)];
             switchTab(tabName);
         });
     });
 
-    console.log('✅ Tab buttons initialized');
+    console.log('✅ Các nút tab đã được khởi tạo');
 });

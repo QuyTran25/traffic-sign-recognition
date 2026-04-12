@@ -1,5 +1,5 @@
 """
-Flask application for Traffic Sign Recognition System
+Ứng dụng Flask cho Hệ thống Nhận diện Biển báo Giao thông
 """
 
 from flask import Flask, render_template, request, jsonify
@@ -20,52 +20,52 @@ app.config.from_object(Config)
 CORS(app)
 
 # ============================================
-# ROUTES
+# CÁC TUYẾN ĐƯỜNG
 # ============================================
 
 @app.route('/')
 def index():
-    """Serve main application page"""
+    """Phục vụ trang ứng dụng chính"""
     return render_template('index.html')
 
 @app.route('/health')
 def health_check():
-    """Health check endpoint"""
+    """Điểm cuối kiểm tra sức khỏe"""
     return jsonify({
         'status': 'healthy',
-        'service': 'Traffic Sign Recognition API',
+        'service': 'API Hệ thống Nhận diện Biển báo Giao thông',
         'version': '1.0.0'
     }), 200
 
 # ============================================
-# API ROUTES (PLACEHOLDER)
+# CÁC TUYẾN ĐỌC API (TRÌNH GIỮ CHỖ)
 # ============================================
 
 @app.route('/api/predict-image', methods=['POST'])
 def predict_image():
     """
-    Predict traffic sign from uploaded image
+    Dự đoán biển báo giao thông từ ảnh tải lên
     
-    Expected: POST request with file field
-    Returns: JSON with sign_id, sign_name_vi, confidence, guidance_vi, audio_file
+    Mong đợi: Yêu cầu POST với trường file
+    Trả về: JSON với sign_id, sign_name_vi, confidence, guidance_vi, audio_file
     """
     try:
         if 'file' not in request.files:
-            return jsonify({'success': False, 'error_message': 'No file provided'}), 400
+            return jsonify({'success': False, 'error_message': 'Không có tệp nào được cung cấp'}), 400
         
-        # TODO: Implement image prediction
-        # 1. Load model from src/model.py
-        # 2. Preprocess image
-        # 3. Run inference
-        # 4. Return results
+        # TODO: Triển khai dự đoán ảnh
+        # 1. Tải mô hình từ src/model.py
+        # 2. Tiền xử lý ảnh
+        # 3. Chạy suy luận
+        # 4. Trả về kết quả
         
         return jsonify({
             'success': True,
-            'message': 'API endpoint placeholder - implement in Sprint 1',
+            'message': 'Trình giữ chỗ điểm cuối API - triển khai trong Sprint 1',
             'sign_id': 0,
-            'sign_name_vi': 'Placeholder',
+            'sign_name_vi': 'Trình giữ chỗ',
             'confidence': 0.5,
-            'guidance_vi': 'This is a placeholder. Implement prediction in Sprint 2.',
+            'guidance_vi': 'Đây là trình giữ chỗ. Triển khai dự đoán trong Sprint 2.',
             'audio_file': '',
             'processing_time_ms': 0
         }), 200
@@ -76,26 +76,26 @@ def predict_image():
 @app.route('/api/predict-video', methods=['POST'])
 def predict_video():
     """
-    Upload video for processing
+    Tải video để xử lý
     
-    Expected: POST request with video file
-    Returns: JSON with job_id and processing status
+    Mong đợi: Yêu cầu POST với tệp video
+    Trả về: JSON với job_id và trạng thái xử lý
     """
     try:
         if 'file' not in request.files:
-            return jsonify({'success': False, 'error_message': 'No file provided'}), 400
+            return jsonify({'success': False, 'error_message': 'Không có tệp nào được cung cấp'}), 400
         
-        # TODO: Implement video upload and job creation
-        # 1. Save uploaded video
-        # 2. Create processing job
-        # 3. Queue for background processing
-        # 4. Return job_id for status polling
+        # TODO: Triển khai tải video và tạo công việc
+        # 1. Lưu video tải lên
+        # 2. Tạo công việc xử lý
+        # 3. Xếp hàng cho xử lý nền
+        # 4. Trả về job_id để thăm dò trạng thái
         
         return jsonify({
             'success': True,
             'job_id': f'video_{os.urandom(8).hex()}',
             'status': 'queued',
-            'message': 'Video queued for processing'
+            'message': 'Video được xếp hàng để xử lý'
         }), 200
         
     except Exception as e:
@@ -104,20 +104,20 @@ def predict_video():
 @app.route('/api/video-status', methods=['GET'])
 def video_status():
     """
-    Poll video processing status
+    Thăm dò trạng thái xử lý video
     
-    Query: job_id
-    Returns: JSON with progress, current_frame, detections_count, eta_seconds
+    Truy vấn: job_id
+    Trả về: JSON với progress, current_frame, detections_count, eta_seconds
     """
     try:
         job_id = request.args.get('job_id')
         if not job_id:
-            return jsonify({'success': False, 'error_message': 'job_id required'}), 400
+            return jsonify({'success': False, 'error_message': 'yêu cầu job_id'}), 400
         
-        # TODO: Implement status polling
-        # 1. Look up job in database/queue
-        # 2. Return current progress
-        # 3. When complete, set status='completed'
+        # TODO: Triển khai thăm dò trạng thái
+        # 1. Tra cứu công việc trong cơ sở dữ liệu/hàng đợi
+        # 2. Trả về tiến độ hiện tại
+        # 3. Khi hoàn thành, đặt status='completed'
         
         return jsonify({
             'success': True,
@@ -136,20 +136,20 @@ def video_status():
 @app.route('/api/video-results', methods=['GET'])
 def video_results():
     """
-    Get video processing results
+    Lấy kết quả xử lý video
     
-    Query: job_id
-    Returns: JSON with detections list and output video URL
+    Truy vấn: job_id
+    Trả về: JSON với danh sách phát hiện và URL video đầu ra
     """
     try:
         job_id = request.args.get('job_id')
         if not job_id:
-            return jsonify({'success': False, 'error_message': 'job_id required'}), 400
+            return jsonify({'success': False, 'error_message': 'yêu cầu job_id'}), 400
         
-        # TODO: Implement results retrieval
-        # 1. Look up completed job
-        # 2. Return detections from database
-        # 3. Provide download URL for processed video
+        # TODO: Triển khai lấy kết quả
+        # 1. Tra cứu công việc đã hoàn thành
+        # 2. Trả về phát hiện từ cơ sở dữ liệu
+        # 3. Cung cấp URL tải xuống cho video được xử lý
         
         return jsonify({
             'success': True,
@@ -171,28 +171,28 @@ def video_results():
 #     pass
 
 # ============================================
-# ERROR HANDLERS
+# CÁC TRÌNH XỬ LÝ LỖI
 # ============================================
 
 @app.errorhandler(404)
 def not_found(error):
-    """Handle 404 errors"""
-    return jsonify({'error': 'Not found'}), 404
+    """Xử lý lỗi 404"""
+    return jsonify({'error': 'Không tìm thấy'}), 404
 
 @app.errorhandler(500)
 def internal_error(error):
-    """Handle 500 errors"""
-    return jsonify({'error': 'Internal server error'}), 500
+    """Xử lý lỗi 500"""
+    return jsonify({'error': 'Lỗi máy chủ nội bộ'}), 500
 
 # ============================================
-# MAIN
+# CHÍNH
 # ============================================
 
 if __name__ == '__main__':
     print("""
     ╔════════════════════════════════════════╗
-    ║  Traffic Sign Recognition System       ║
-    ║  Flask Development Server              ║
+    ║  Hệ thống Nhận diện Biển báo           ║
+    ║  Máy chủ Phát triển Flask              ║
     ║  http://localhost:5000                 ║
     ╚════════════════════════════════════════╝
     """)

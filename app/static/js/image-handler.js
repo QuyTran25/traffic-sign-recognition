@@ -1,9 +1,9 @@
 /* ============================================
-   IMAGE TAB - Handle image upload & prediction
+   IMAGE TAB - Xử lý tải lên & dự đoán ảnh
    ============================================ */
 
 /**
- * Preview uploaded image
+ * Xem trước ảnh tải lên
  */
 function previewImage(event) {
     const file = event.target.files[0];
@@ -20,18 +20,18 @@ function previewImage(event) {
             uploadedImage.style.display = 'block';
             emptyImageState.style.display = 'none';
             predictBtn.disabled = false;
-            console.log(`📷 Image preview loaded: ${file.name}`);
+            console.log(`📷 Đã tải trước ảnh: ${file.name}`);
         };
 
         reader.readAsDataURL(file);
     } else {
-        showError('Invalid file format. Please select a JPG or PNG image.');
+        showError('Định dạng tệp không hợp lệ. Vui lòng chọn ảnh JPG hoặc PNG.');
         clearImage();
     }
 }
 
 /**
- * Clear uploaded image
+ * Xóa ảnh tải lên
  */
 function clearImage() {
     const imageInput = document.getElementById('imageInput');
@@ -48,11 +48,11 @@ function clearImage() {
     predictBtn.disabled = true;
     imageResults.innerHTML = '<div class="empty-state" style="text-align: center; padding: 40px; color: #95a5a6;"><p>Kết quả sẽ hiển thị ở đây</p></div>';
 
-    console.log('🗑️ Image cleared');
+    console.log('🗑️ Đã xóa ảnh');
 }
 
 /**
- * Predict image using backend API
+ * Dự đoán ảnh bằng API phía sau
  */
 async function predictImage() {
     const imageInput = document.getElementById('imageInput');
@@ -60,21 +60,21 @@ async function predictImage() {
     const imageResults = document.getElementById('imageResults');
 
     if (!imageInput.files[0]) {
-        showError('Please select an image first');
+        showError('Vui lòng chọn ảnh trước');
         return;
     }
 
     try {
-        // Disable button during processing
+        // Vô hiệu hóa nút trong quá trình xử lý
         predictBtn.disabled = true;
-        showLoading('Predicting image...');
+        showLoading('Đang dự đoán ảnh...');
 
-        // Upload and predict
+        // Tải lên và dự đoán
         const result = await uploadFile('/predict-image', imageInput);
 
-        // Display results
+        // Hiển thị kết quả
         displayImageResults(result);
-        showSuccess('Prediction completed!');
+        showSuccess('Dự đoán đã hoàn tất!');
     } catch (error) {
         showError(error.message);
     } finally {

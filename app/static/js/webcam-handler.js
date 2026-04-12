@@ -1,5 +1,5 @@
 /* ============================================
-   WEBCAM TAB - Handle real-time detection
+   WEBCAM TAB - Xử lý phát hiện thời gian thực
    ============================================ */
 
 let webcamSocket = null;
@@ -10,13 +10,13 @@ let detectionHistory = [];
 let audioMuted = false;
 
 /**
- * Start webcam stream
+ * Bật đầu luồng webcam
  */
 async function startWebcam() {
     try {
-        showLoading('Starting webcam...');
+        showLoading('Bắt đầu webcam...');
 
-        // Request camera access
+        // Yêu cầu truy cập camera
         const stream = await navigator.mediaDevices.getUserMedia({
             video: {
                 width: { ideal: 1280 },
@@ -29,24 +29,24 @@ async function startWebcam() {
         appState.webcamStream = stream;
         appState.webcamActive = true;
 
-        // Display video stream
+        // Hiển thị luồng video
         const video = document.getElementById('webcamVideo');
         video.srcObject = stream;
-        video.play().catch(e => console.error('Video play error:', e));
+        video.play().catch(e => console.error('Lỗi phát video:', e));
 
-        // Update UI
+        // Cập nhật UI
         document.getElementById('startWebcamBtn').disabled = true;
         document.getElementById('stopWebcamBtn').disabled = false;
-        document.getElementById('cameraStatus').textContent = '🟢 Active';
+        document.getElementById('cameraStatus').textContent = '🟢 Đang hoạt động';
         document.getElementById('cameraStatus').style.color = '#27ae60';
 
-        // Reset stats
+        // Đặt lại thống kê
         frameCount = 0;
         detectionHistory = [];
         document.getElementById('totalDetections').textContent = '0';
         updateDetectionHistory();
 
-        // Connect WebSocket for real-time detections
+        // Kết nối WebSocket cho phát hiện thời gian thực
         connectWebcamSocket();
 
         // Start FPS counter

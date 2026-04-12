@@ -15,39 +15,39 @@ let appState = {
 };
 
 /**
- * Switch between tabs
+ * Tắm dừng tab
  */
 function switchTab(tabName) {
-    // Hide all tabs
+    // Ẩn tất cả tab
     const tabs = document.querySelectorAll('.tab-content');
     tabs.forEach(tab => tab.classList.remove('active'));
 
-    // Remove active class from all buttons
+    // Gỡ bỏ lớp Đang hoạt động khỏi tất cả các nút
     const buttons = document.querySelectorAll('.tab-btn');
     buttons.forEach(btn => btn.classList.remove('active'));
 
-    // Show selected tab
+    // Hiền thị tab được chọn
     const selectedTab = document.getElementById(tabName);
     if (selectedTab) {
         selectedTab.classList.add('active');
     }
 
-    // Add active class to clicked button
+    // Thêm lớp Đang hoạt động vào nút được nhấp
     event.target.classList.add('active');
 
-    // Update state
+    // Cập nhật trạng thái
     appState.currentTab = tabName;
 
-    // Cleanup based on tab change
+    // Dọn dẹp dựa trên thay đổi tab
     if (tabName !== 'webcam-tab' && appState.webcamActive) {
         stopWebcam();
     }
 
-    console.log(`📑 Switched to tab: ${tabName}`);
+    console.log(`🗒 Đã chuyển sang tab: ${tabName}`);
 }
 
 /**
- * Format time duration
+ * Định dạng thời gian kéo dài
  */
 function formatTime(seconds) {
     const hrs = Math.floor(seconds / 3600);
@@ -61,29 +61,29 @@ function formatTime(seconds) {
 }
 
 /**
- * Format confidence as percentage
+ * Định dạng độ tin cậy dưới dạng phần trăm
  */
 function formatConfidence(confidence) {
     return (confidence * 100).toFixed(1) + '%';
 }
 
 /**
- * Show loading indicator
+ * Hiền thị chỉ báo tải
  */
-function showLoading(message = 'Loading...') {
+function showLoading(message = 'Tải...'){
     console.log(`⏳ ${message}`);
 }
 
 /**
- * Show error notification
+ * Hiền thị thông báo lỗi
  */
 function showError(message) {
-    console.error(`❌ Error: ${message}`);
-    alert('Error: ' + message);
+    console.error(`❌ Lỗi: ${message}`);
+    alert('Lỗi: ' + message);
 }
 
 /**
- * Show success notification
+ * Hiền thị thông báo thành công
  */
 function showSuccess(message) {
     console.log(`✅ ${message}`);

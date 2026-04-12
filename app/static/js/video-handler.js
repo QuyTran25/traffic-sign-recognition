@@ -1,11 +1,11 @@
 /* ============================================
-   VIDEO TAB - Handle video upload & processing
+   VIDEO TAB - Xử lý tải lên & xử lý video
    ============================================ */
 
 let videoPollingInterval;
 
 /**
- * Handle video file upload
+ * Xử lý tải lên tệp video
  */
 async function handleVideoUpload(event) {
     const file = event.target.files[0];
@@ -16,38 +16,38 @@ async function handleVideoUpload(event) {
     if (!file) return;
 
     try {
-        // Validate file
+        // Xác thực tệp
         if (file.size > 500 * 1024 * 1024) {
-            throw new Error('Video file too large (max 500MB)');
+            throw new Error('Tệp video quá lớn (tối đa 500MB)');
         }
 
         if (!file.type.startsWith('video/')) {
-            throw new Error('Invalid file format. Please select a video file.');
+            throw new Error('Định dạng tệp không hợp lệ. Vui lòng chọn tệp video.');
         }
 
-        // Show loading state
-        showLoading(`Uploading video: ${file.name}`);
-        document.getElementById('videoStatus').textContent = '⏳ Uploading...';
+        // Hiển thị trạng thái đang tải
+        showLoading(`Đang tải video: ${file.name}`);
+        document.getElementById('videoStatus').textContent = '⏳ Đang tải...';
         document.getElementById('videoStatus').style.color = '#f39c12';
 
-        // Upload video
+        // Tải video
         const result = await uploadFile('/predict-video', event.target);
 
         if (!result.success) {
-            throw new Error(result.error_message || 'Upload failed');
+            throw new Error(result.error_message || 'Tải lên thất bại');
         }
 
-        // Store job ID
+        // Lưu ID công việc
         appState.videoJobId = result.job_id;
 
-        // Update UI
-        document.getElementById('videoStatus').textContent = '⌛ Processing...';
+        // Cập nhật UI
+        document.getElementById('videoStatus').textContent = '⌛ Đang xử lý...';
         document.getElementById('videoStatus').style.color = '#3498db';
         progressSection.style.display = 'block';
         detectionsContainer.style.display = 'block';
         downloadSection.style.display = 'none';
 
-        console.log(`✅ Video uploaded. Job ID: ${result.job_id}`);
+        console.log(`✅ Video đã tải lên. ID công việc: ${result.job_id}`);
 
         // Start polling for progress
         pollVideoProgress(result.job_id);
