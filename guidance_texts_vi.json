@@ -1,0 +1,87 @@
+{
+  "0": "Biển báo: Giới hạn tốc độ (20km/h). Người điều khiển phương tiện phải giảm tốc độ xuống tối đa 20 km/h khi đi vào khu vực này. Thường là nơi đông dân cư. Hãy quan sát kỹ xung quanh và giữ khoảng cách an toàn để tránh va chạm.",
+  
+  "1": "Biển báo: Giới hạn tốc độ (30km/h). Người lái xe cần duy trì tốc độ không vượt quá 30 km/h. Khu vực này có thể có nhiều phương tiện hoặc người đi bộ. Luôn chú ý quan sát hai bên đường và sẵn sàng xử lý tình huống bất ngờ.",
+  
+  "2": "Biển báo: Giới hạn tốc độ (50km/h). Người điều khiển cần giữ tốc độ tối đa 50 km/h khi lưu thông. Đây thường là khu vực đô thị. Hãy tuân thủ đúng tốc độ và giữ khoảng cách an toàn để tránh tai nạn giao thông.",
+  
+  "3": "Biển báo: Giới hạn tốc độ (60km/h). Người lái xe cần điều khiển phương tiện không vượt quá 60 km/h. Hãy chú ý quan sát giao thông phía trước và giữ khoảng cách hợp lý để đảm bảo an toàn khi di chuyển.",
+  
+  "4": "Biển báo: Giới hạn tốc độ (70km/h). Người điều khiển phải duy trì tốc độ dưới 70 km/h. Đường có thể có nhiều phương tiện di chuyển nhanh. Hãy giữ tay lái chắc chắn và tránh tăng tốc đột ngột gây nguy hiểm.",
+  
+  "5": "Biển báo: Giới hạn tốc độ (80km/h). Người lái xe cần giữ tốc độ không vượt quá 80 km/h. Dù đường thông thoáng, vẫn cần tập trung lái xe và giữ khoảng cách với phương tiện phía trước để đảm bảo an toàn.",
+  
+  "6": "Biển báo: Hết hạn chế tốc độ (80km/h). Bạn đã ra khỏi khu vực bị giới hạn tốc độ trước đó. Tuy nhiên, vẫn cần điều khiển phương tiện phù hợp với điều kiện giao thông. Không nên tăng tốc đột ngột gây mất kiểm soát.",
+  
+  "7": "Biển báo: Giới hạn tốc độ (100km/h). Người điều khiển phương tiện được phép chạy tối đa 100 km/h. Thường áp dụng trên đường cao tốc. Hãy giữ khoảng cách an toàn và luôn chú ý các phương tiện xung quanh.",
+  
+  "8": "Biển báo: Giới hạn tốc độ (120km/h). Đây là tốc độ tối đa cho phép trên đoạn đường này. Người lái cần giữ tốc độ ổn định, tập trung cao độ và tránh sử dụng điện thoại khi đang điều khiển phương tiện.",
+  
+  "9": "Biển báo: Cấm vượt. Người điều khiển không được phép vượt xe khác trong khu vực này. Đường có thể nguy hiểm hoặc tầm nhìn hạn chế. Hãy giữ đúng làn đường và kiên nhẫn di chuyển để đảm bảo an toàn.",
+  
+  "10": "Biển báo: Cấm xe tải trên 3.5 tấn vượt. Xe tải lớn không được phép vượt các phương tiện khác. Điều này giúp giảm nguy cơ tai nạn. Người điều khiển xe tải cần tuân thủ nghiêm túc quy định này.",
+  
+  "11": "Biển báo: Ưu tiên tại nơi đường giao nhau. Bạn có quyền ưu tiên khi đi qua giao lộ. Tuy nhiên vẫn cần quan sát kỹ các hướng khác. Không nên chủ quan vì các phương tiện khác có thể không nhường đường.",
+  
+  "12": "Biển báo: Đường ưu tiên. Bạn đang di chuyển trên tuyến đường được ưu tiên. Các phương tiện khác phải nhường đường cho bạn. Tuy nhiên vẫn cần quan sát và giảm tốc khi cần thiết để đảm bảo an toàn.",
+  
+  "13": "Biển báo: Nhường đường. Người điều khiển phải giảm tốc độ và nhường đường cho các phương tiện khác. Quan sát kỹ trước khi tiếp tục di chuyển. Không nên cố đi trước gây nguy hiểm.",
+  
+  "14": "Biển báo: Dừng lại. Người lái phải dừng hoàn toàn trước vạch dừng. Sau đó quan sát kỹ hai bên và chỉ tiếp tục khi an toàn. Đây là quy định bắt buộc, cần tuân thủ nghiêm túc.",
+  
+  "15": "Biển báo: Cấm mọi loại xe. Tất cả các phương tiện đều không được phép đi vào khu vực này. Người điều khiển cần tìm hướng đi khác. Vi phạm có thể gây nguy hiểm và bị xử phạt.",
+  
+  "16": "Biển báo: Cấm xe tải. Xe tải không được phép lưu thông trong khu vực này. Điều này nhằm giảm ùn tắc hoặc bảo vệ đường. Người lái xe tải cần chọn tuyến đường khác phù hợp.",
+  
+  "17": "Biển báo: Cấm đi ngược chiều. Người điều khiển không được đi vào hướng có biển báo này. Hãy quay đầu hoặc chọn tuyến đường khác. Vi phạm có thể gây tai nạn nghiêm trọng.",
+  
+  "18": "Biển báo: Nguy hiểm khác. Khu vực phía trước có nguy cơ tiềm ẩn không xác định. Người lái cần giảm tốc độ và quan sát kỹ. Luôn sẵn sàng xử lý các tình huống bất ngờ.",
+  
+  "19": "Biển báo: Chỗ ngoặt nguy hiểm vòng bên trái. Phía trước là đoạn cong gấp bên trái. Người điều khiển cần giảm tốc độ, giữ tay lái chắc chắn và không vượt xe trong khu vực này.",
+  
+  "20": "Biển báo: Chỗ ngoặt nguy hiểm vòng bên phải. Phía trước là đoạn cong gấp bên phải. Hãy giảm tốc và quan sát kỹ. Tránh đánh lái đột ngột gây mất kiểm soát.",
+  
+  "21": "Biển báo: Đường cong kép. Phía trước có nhiều đoạn cong liên tiếp. Người lái cần giảm tốc độ và tập trung điều khiển xe. Giữ khoảng cách an toàn với phương tiện phía trước.",
+  
+  "22": "Biển báo: Đường gồ ghề. Mặt đường phía trước không bằng phẳng. Người điều khiển cần giảm tốc để tránh hư hỏng xe. Giữ tay lái chắc chắn và quan sát kỹ.",
+  
+  "23": "Biển báo: Đường trơn trượt. Đường có thể trơn do mưa hoặc dầu. Người lái cần giảm tốc độ và tránh phanh gấp. Giữ khoảng cách an toàn để phòng tránh tai nạn.",
+  
+  "24": "Biển báo: Đường bị hẹp bên phải. Làn đường phía trước bị thu hẹp bên phải. Người điều khiển cần giảm tốc độ và chú ý phương tiện xung quanh. Nhường đường khi cần thiết.",
+  
+  "25": "Biển báo: Công trường đang thi công. Khu vực phía trước đang thi công. Có thể có công nhân hoặc vật cản. Người lái cần giảm tốc độ và đi theo hướng dẫn.",
+  
+  "26": "Biển báo: Tín hiệu đèn giao thông. Phía trước có đèn tín hiệu. Người điều khiển cần giảm tốc và chuẩn bị dừng. Tuân thủ tín hiệu đèn để đảm bảo an toàn.",
+  
+  "27": "Biển báo: Đường người đi bộ cắt ngang. Có người đi bộ qua đường. Người lái cần giảm tốc độ và nhường đường. Quan sát kỹ hai bên đường.",
+  
+  "28": "Biển báo: Trẻ em sang đường. Khu vực có trẻ em qua lại. Người điều khiển cần đi chậm và chú ý quan sát. Trẻ có thể băng qua đường bất ngờ.",
+  
+  "29": "Biển báo: Đường người đi xe đạp cắt ngang. Có xe đạp qua đường. Người lái cần giữ khoảng cách an toàn và quan sát kỹ khi di chuyển.",
+  
+  "30": "Biển báo: Cảnh báo băng tuyết. Đường có thể đóng băng hoặc trơn trượt. Người điều khiển cần giảm tốc độ và lái xe cẩn thận. Tránh phanh gấp.",
+  
+  "31": "Biển báo: Động vật hoang dã băng ngang. Có thể có động vật băng qua đường. Người lái cần giảm tốc và chú ý quan sát. Sẵn sàng phanh khi cần.",
+  
+  "32": "Biển báo: Hết tất cả các lệnh cấm. Các hạn chế trước đó không còn hiệu lực. Tuy nhiên người lái vẫn phải tuân thủ luật giao thông chung.",
+  
+  "33": "Biển báo: Các xe chỉ được rẽ phải. Người điều khiển bắt buộc rẽ phải theo hướng chỉ dẫn. Không được đi thẳng hoặc rẽ trái.",
+  
+  "34": "Biển báo: Các xe chỉ được rẽ trái. Người lái phải rẽ trái theo biển báo. Không được đi hướng khác.",
+  
+  "35": "Biển báo: Chỉ được đi thẳng. Người điều khiển chỉ được đi thẳng. Không được rẽ trái hoặc phải.",
+  
+  "36": "Biển báo: Chỉ được đi thẳng hoặc rẽ phải. Người lái chỉ được đi thẳng hoặc rẽ phải. Không được rẽ trái.",
+  
+  "37": "Biển báo: Chỉ được đi thẳng hoặc rẽ trái. Người điều khiển chỉ được đi thẳng hoặc rẽ trái. Không được rẽ phải.",
+  
+  "38": "Biển báo: Đi bên phải. Người điều khiển phải đi về phía bên phải theo hướng chỉ dẫn.",
+  
+  "39": "Biển báo: Đi bên trái. Người lái phải đi về phía bên trái theo biển báo.",
+  
+  "40": "Biển báo: Giao nhau chạy theo vòng xuyến. Phía trước là vòng xuyến. Người điều khiển cần đi theo vòng và nhường đường cho xe bên trong.",
+  
+  "41": "Biển báo: Hết cấm vượt. Người điều khiển được phép vượt xe trở lại khi đảm bảo an toàn.",
+  
+  "42": "Biển báo: Hết cấm xe tải vượt. Xe tải được phép vượt trở lại. Tuy nhiên cần đảm bảo an toàn khi vượt."
+}

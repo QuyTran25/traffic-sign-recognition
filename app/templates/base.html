@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hệ thống Nhận diện Biển báo Giao thông{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>Hệ thống Nhận diện Biển báo Giao thông</h1>
+            <p>Nhận diện và hướng dẫn biển báo giao thông có hỗ trợ AI</p>
+        </div>
+
+        <!-- TABS NAVIGATION -->
+        {% block tabs %}{% endblock %}
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            {% block content %}{% endblock %}
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>© 2026 Hệ thống Nhận diện Biển báo Giao thông</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

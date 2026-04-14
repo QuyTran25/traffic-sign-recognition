@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}Nhận diện Biển báo Giao thông{% endblock %}
+
+{% block tabs %}
+<div class="tabs-container">
+    <button class="tab-btn active" onclick="switchTab('image-tab')">Tải ảnh</button>
+    <button class="tab-btn" onclick="switchTab('video-tab')">Tải video</button>
+    <button class="tab-btn" onclick="switchTab('webcam-tab')">Luồng Webcam</button>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- TAB 1: IMAGE INFERENCE -->
+<div id="image-tab" class="tab-content active">
+    <div class="tab-layout">
+        <!-- LEFT: Input & Display -->
+        <div class="display-section">
+            <div class="upload-section" onclick="document.getElementById('imageInput').click()">
+                <p style="font-size: 2em; margin-bottom: 8px;">📷</p>
+                <p><strong>Chọn ảnh biển báo giao thông</strong></p>
+                <p>JPG, PNG • Tối đa 10MB</p>
+                <input type="file" id="imageInput" accept="image/jpeg,image/png" onchange="previewImage(event)">
+            </div>
+
+            <div class="display-area with-image" id="imageDisplay">
+                <img id="uploadedImage" src="" alt="Traffic sign" style="display: none;">
+                <div class="empty-state" id="emptyImageState">
+                    <div class="empty-state-icon">📸</div>
+                    <p>Xem trước ảnh</p>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-primary" onclick="predictImage()" id="predictBtn" disabled>Phân tích ảnh</button>
+                <button class="btn btn-secondary" onclick="clearImage()">Xóa</button>
+            </div>
+        </div>
+
+        <!-- RIGHT: Results -->
+        <div class="results-section" id="imageResults">
+            <div class="empty-state" style="text-align: center; padding: 40px; color: #999;">
+                <p>Kết quả sẽ hiển thị ở đây</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TAB 2: VIDEO ANALYTICS -->
+<div id="video-tab" class="tab-content">
+    <div style="margin-bottom: 30px;">
+        <!-- Upload & Controls Row -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <!-- Upload Section -->
+            <div class="upload-section" onclick="document.getElementById('videoInput').click()" style="min-height: 80px;">
+                <p style="font-size: 2em; margin-bottom: 8px;">🎥</p>
+                <p><strong>Chọn tệp video</strong></p>
+                <p>MP4, AVI • Tối đa 500MB</p>
+                <input type="file" id="videoInput" accept="video/mp4,video/avi" onchange="handleVideoUpload(event)">
+            </div>
+
+            <!-- Quick Stats -->
+            <div style="background: #F8F9FC; padding: 20px; border-radius: 8px; border: 1px solid #E0EAFA;">
+                <div class="result-item">
+                    <span class="result-label">Trạng thái:</span>
+                    <span class="result-value" id="videoStatus">Chờ đợi</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Tiến độ:</span>
+                    <span class="result-value" id="videoProgress">0%</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Phát hiện:</span>
+                    <span class="result-value" id="videoDetectionCount">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section" id="progressSection" style="display: none;">
+            <div class="progress-info">
+                <span id="progressText">Đang xử lý video</span>
+                <span id="etaText">Ước tính --</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <!-- Detections Table -->
+        <div style="margin-top: 30px;" id="detectionsContainer" style="display: none;">
+            <h3 style="color: #120368; margin-bottom: 15px; font-weight: 600;">Phát hiện</h3>
+            <div class="detections-table">
+                <table id="detectionsTable">
+                    <thead>
+                        <tr>
+                            <th>Khung hình</th>
+                            <th>Thời gian</th>
+                            <th>Biển báo</th>
+                            <th>Độ tin cậy</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detectionsBody">
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #999;">Không có dữ liệu</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+<!-- Audio Section for Video -->
+        <div class="audio-section" id="videoAudioSection" style="display: none; margin-top: 20px;">
+            <label>Hướng dẫn âm thanh</label>
+            <audio id="videoAudio" class="audio-player" controls preload="auto">
+                <source src="" type="audio/mpeg">
+            </audio>
+            <p style="font-size: 0.85em; color: #999; margin-top: 8px;">
+                Nhấp vào dòng phát hiện để phát âm thanh
+            </p>
+        </div>
+
+        <!-- Download Section -->
+        <div class="download-section" id="downloadSection" style="display: none; margin-top: 30px;">
+            <p>Tải video đã xử lý:</p>
+            <button class="btn btn-primary" id="downloadBtn" onclick="downloadVideo()" style="margin-top: 10px;">Tải video đầu ra</button>
+            <p style="font-size: 0.85em; color: #999; margin-top: 8px;">
+                MP4 với chú thích
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- TAB 3: REAL-TIME WEBCAM -->
+<div id="webcam-tab" class="tab-content">
+    <div class="tab-layout">
+        <!-- LEFT: Webcam Stream -->
+        <div class="display-section">
+            <div class="display-area" style="background: #000; position: relative;" id="webcamContainer">
+                <video id="webcamVideo" style="width: 100%; height: 100%; object-fit: cover;" playsinline></video>
+                <canvas id="webcamCanvas" style="display: none; width: 100%; height: 100%;"></canvas>
+                <div style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.6); color: #27ae60; padding: 8px 12px; border-radius: 5px; font-weight: 600; font-size: 0.9em;">
+                    FPS: <span id="fpsCounter">0</span> | Phát hiện: <span id="webcamDetectionCounter">0</span>
+                </div>
+            </div>
+
+            <div class="webcam-controls">
+                <button class="btn btn-primary" id="startWebcamBtn" onclick="startWebcam()">Bắt đầu Webcam</button>
+                <button class="btn btn-danger" id="stopWebcamBtn" onclick="stopWebcam()" disabled>Dừng</button>
+            </div>
+
+            <div class="webcam-status">
+                <div class="status-item">
+                    <span class="status-label">Máy ảnh:</span>
+                    <span class="status-value" id="cameraStatus">Tắt</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">FPS:</span>
+                    <span class="status-value" id="fpsDisplay">0</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Độ trễ:</span>
+                    <span class="status-value" id="latencyDisplay">0ms</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Tổng phát hiện:</span>
+                    <span class="status-value" id="totalDetections">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Real-time Results -->
+        <div class="results-section">
+            <div class="result-card" id="webcamResultCard">
+                <h3>Phát hiện theo thời gian thực</h3>
+                <div class="empty-state" style="padding: 20px; text-align: center; color: #999;">
+                    <p>Bắt đầu webcam để xem phát hiện</p>
+                </div>
+            </div>
+
+            <div class="guidance-box" id="guidanceBox" style="display: none;"></div>
+
+            <div class="audio-section">
+                <label>Hướng dẫn âm thanh</label>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button class="btn btn-primary" id="playAudioBtn" onclick="playAudio()" style="flex: 1; display: none;">Phát âm thanh</button>
+                    <button class="btn btn-secondary" id="muteAudioBtn" onclick="toggleMute()" style="flex: 1;">Tắt tiếng</button>
+                </div>
+            </div>
+
+            <div style="background: #F0F8F4; padding: 15px; border-radius: 8px; border-left: 4px solid #28A745;">
+                <h4 style="color: #1E7E34; margin-bottom: 10px; font-weight: 600;">Lịch sử phát hiện (30 giây gần đây)</h4>
+                <div style="font-size: 0.9em; color: #34495e; line-height: 1.8;" id="detectionHistory">
+                    <div style="color: #999;">Chưa có phát hiện</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/tabs.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api-client.js') }}"></script>
+<script src="{{ url_for('static', filename='js/image-handler.js') }}"></script>
+<script src="{{ url_for('static', filename='js/video-handler.js') }}"></script>
+<script src="{{ url_for('static', filename='js/webcam-handler.js') }}"></script>
+{% endblock %}
+

@@ -1,0 +1,232 @@
+# Traffic Sign Recognition System
+
+## Description
+
+This project aims to build a system that can recognize and classify traffic signs from images and video streams. The system detects traffic signs in real-time, classifies them into 43 different types (GTSRB dataset), and provides guidance in Vietnamese through text and audio output.
+
+## Key Features
+
+- Image-based traffic sign recognition
+- Video/Real-time traffic sign detection
+- Classification of 43 traffic sign types
+- Vietnamese language guidance with text-to-speech (TTS) audio output
+- Web-based interface for easy access
+- Model accuracy >= 85%
+
+## Project Objectives
+
+1. Detect traffic signs in various conditions (blurry, low light, occluded)
+2. Classify signs accurately into 43 categories
+3. Provide clear instructions in Vietnamese
+4. Build a user-friendly web application
+5. Generate audio guidance for drivers
+
+## Technical Stack
+
+Language: Python 3.8+
+
+Frameworks and Libraries:
+- **Deep Learning:** PyTorch, TorchVision
+- **Image Processing:** OpenCV, NumPy, Pillow, Albumentations
+- **Web Framework:** Flask
+- **Text-to-Speech:** pyttsx3
+- **Data Processing:** Pandas, scikit-learn
+- **Visualization:** Matplotlib, Seaborn
+- **Testing:** Pytest, Jupyter
+
+## Project Structure
+
+```
+traffic-sign-recognition/
+│
+├── data/
+│   ├── GTSRB/                      Dataset (43,000 images)
+│   ├── train/                      Training data
+│   ├── val/                        Validation data
+│   └── test/                       Testing data
+│
+├── src/
+│   ├── model.py                    MobileNetV2 model
+│   ├── train.py                    Training script
+│   ├── preprocessing.py            Image processing
+│   ├── data_exploration.py         Data analysis
+│   ├── inference.py                Single image prediction
+│   ├── video_processor.py          Video processing
+│   ├── video_visualizer.py         Visualization utils
+│   ├── tts_engine.py               Text-to-speech
+│   ├── sign_labels_vi.json         Traffic sign labels (Vietnamese)
+│   └── guidance_texts_vi.json      Guidance texts (Vietnamese)
+│
+├── app/
+│   ├── app.py                      Flask server
+│   ├── config.py                   Configuration
+│   ├── mockdata.json               Mock data for testing
+│   ├── templates/
+│   │   └── index.html              Web interface
+│   └── static/
+│       └── style.css               CSS styling
+│
+├── output/
+│   ├── model.pth                   Trained model weights
+│   ├── training_log.json           Training history
+│   ├── audio/                      Generated audio files
+│   └── images/                     Result visualizations
+│
+├── report/
+│   └── Report file (PDF)
+│
+├── test_data/
+│   ├── raw_images/                 Real test images
+│   └── raw_videos/                 Real test videos
+│
+├── uploads/                        Temporary upload folder
+├── requirements.txt                Dependencies
+├── .gitignore                      Git ignore rules
+└── README.md                       This file
+```
+
+## Model Architecture
+
+Primary Model: MobileNetV2 (Transfer Learning)
+
+- Pre-trained on ImageNet
+- Input size: 64x64 pixels
+- Output: 43 traffic sign classes
+- Training optimizer: Adam
+- Loss function: CrossEntropyLoss
+- Expected accuracy: >= 85%
+
+## Dataset
+
+GTSRB (German Traffic Sign Recognition Benchmark)
+- Total images: 43,000
+- Number of classes: 43
+- Image size: 32x32 to 250x250 pixels
+- Training set: 70% (30,000 images)
+- Validation set: 15% (6,500 images)
+- Testing set: 15% (6,500 images)
+
+## Team Members and Responsibilities
+
+### Sprint 1 (April 9-10): Data Preparation and Interface Design
+- A1: Load GTSRB dataset
+- A2: Data exploration and analysis
+- A3: Image preprocessing and data splitting
+- B1: Configuration and mock data setup
+- B2: HTML/CSS interface design
+- B3: Flask backend with mock data
+
+### Sprint 2 (April 11-12): Model Training and Translation
+- C1: Model architecture
+- C2: Training loop and model training
+- D1: Translation of 43 traffic sign labels
+- D2a: Guidance text creation (classes 0-21)
+- D2b: Guidance text creation (classes 22-42)
+- D3: Text-to-speech audio generation
+
+### Sprint 3 (April 13-14): Application Development and Report
+- E1: Video frame processing
+- E2: Bounding box visualization
+- E3: Flask API implementation
+- E4: Webcam livestream integration
+- F1: Theory and introduction writing
+- F2: Results and metrics preparation
+
+### Sprint 4 (April 15-16): Testing and Finalization
+- All members: System testing
+- C1 + C2: Model accuracy validation
+- E1-E4: Application functionality testing
+- F1 + F2: Final report completion
+- Leader: Quality assurance and demo preparation
+
+## Installation and Setup
+
+### Prerequisites
+- Python 3.8 or higher
+- pip package manager
+- Git
+
+### Installation Steps
+
+1. Clone the repository
+```bash
+git clone <repository-url>
+cd traffic-sign-recognition
+```
+
+2. Create virtual environment
+```bash
+python -m venv venv
+# On Windows:
+venv\Scripts\activate
+# On Linux/Mac:
+source venv/bin/activate
+```
+
+3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+4. Download GTSRB dataset (by A1)
+
+Download from Kaggle: https://www.kaggle.com/meowmeowmeowmeowmeow/gtsrb-german-traffic-sign
+
+Extract to: `data/GTSRB/`
+
+## Usage
+
+### Data Exploration (Sprint 1)
+```bash
+cd src
+python data_exploration.py
+```
+
+### Model Training (Sprint 2)
+```bash
+cd src
+python train.py
+```
+
+### Run Web Application (Sprint 3-4)
+```bash
+cd app
+python app.py
+```
+
+Access at: `http://localhost:5000`
+
+## Expected Outcomes
+
+1. Trained model with 85%+ accuracy
+2. Web application for image/video upload
+3. Real-time webcam streaming detection
+4. Vietnamese language guidance system
+5. Complete technical report (9-15 pages)
+
+## Timeline
+
+Total Duration: 14 days (April 9-16, 2026)
+- Sprint 1: 2 days (Data + UI)
+- Sprint 2: 2 days (Training + Translation)
+- Sprint 3: 2 days (App + Report)
+- Sprint 4: 2 days (Testing + Finalization)
+
+## Notes
+
+- GPU (CUDA) highly recommended for faster training
+- Default to CPU if GPU unavailable (training time ~25-40 hours)
+- All code should follow Python PEP 8 style guidelines
+- Team members should work on separate Git branches
+- Regular commits to track progress
+
+## References
+
+- [GTSRB Dataset](http://benchmark.ini.rub.de/)
+- [MobileNetV2](https://arxiv.org/abs/1801.04381)
+- [PyTorch Documentation](https://pytorch.org/docs/)
+- [Flask Documentation](https://flask.palletsprojects.com/)
+
+---
+
+Last Updated: April 11, 2026

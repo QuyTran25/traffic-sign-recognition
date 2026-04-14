@@ -1,0 +1,91 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Dataset
+data/GTSRB/
+data/train/
+data/val/
+data/test/
+
+# Model and outputs
+output/model.pth
+output/training_log.json
+output/audio/*.mp3
+output/images/
+
+# Test data
+test_data/raw_images/
+test_data/raw_videos/
+
+# Uploads
+uploads/
+
+# Video and media files
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# Logs
+*.log
+logs/
+
+# Report
+report/*.pdf
+report/*.docx
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+.~*

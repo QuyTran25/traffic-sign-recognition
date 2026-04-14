@@ -1,0 +1,283 @@
+{
+  "_description": "Mock API Response Data - Reference cho team implement",
+  "_usage": "Sử dụng dữ liệu này để test UI trước khi model training hoàn tất",
+  "_updated": "April 11, 2026",
+
+  "IMAGE_API_RESPONSE": {
+    "success": true,
+    "sign_id": 0,
+    "sign_class": "speed_limit_30",
+    "sign_name_vi": "Giới hạn tốc độ 30 km/h",
+    "sign_name_en": "Speed Limit 30 km/h",
+    "confidence": 0.985,
+    "guidance_vi": "Vui lòng giảm tốc độ xuống 30 km/h để đảm bảo an toàn. Đây là khu vực có mật độ giao thông cao hoặc xung quanh trường học.",
+    "guidance_short": "Giới hạn tốc độ 30 km/h",
+    "audio_file": "output/audio/sign_0_speed_limit_30.wav",
+    "audio_duration_seconds": 4.2,
+    "bbox": {
+      "x": 45,
+      "y": 30,
+      "width": 120,
+      "height": 135,
+      "center_x": 105,
+      "center_y": 97
+    },
+    "processing_time_ms": 145,
+    "model_version": "mobilenetv2_gtsrb_v1.0",
+    "timestamp": "2026-04-11T14:25:33Z"
+  },
+
+  "VIDEO_UPLOAD_RESPONSE": {
+    "success": true,
+    "job_id": "video_001_202604111425",
+    "status": "queued",
+    "message": "Video queued for processing",
+    "position_in_queue": 1,
+    "estimated_wait_seconds": 45,
+    "file_info": {
+      "original_filename": "test_video_1.mp4",
+      "file_size_mb": 45.2,
+      "duration_seconds": 120,
+      "resolution": "1920x1080",
+      "fps": 30
+    }
+  },
+
+  "VIDEO_STATUS_RESPONSE_IN_PROGRESS": {
+    "job_id": "video_001_202604111425",
+    "status": "processing",
+    "progress_percent": 65,
+    "current_frame": 130,
+    "total_frames": 200,
+    "processed_frames": 130,
+    "detections_count": 8,
+    "fps_processing": 2.89,
+    "eta_seconds": 27,
+    "time_elapsed_seconds": 45,
+    "error": null
+  },
+
+  "VIDEO_STATUS_RESPONSE_COMPLETED": {
+    "job_id": "video_001_202604111425",
+    "status": "completed",
+    "progress_percent": 100,
+    "current_frame": 200,
+    "total_frames": 200,
+    "processed_frames": 200,
+    "detections_count": 8,
+    "fps_processing": 4.44,
+    "time_elapsed_seconds": 45,
+    "error": null,
+    "output_video_url": "/outputs/videos/processed_video_001.mp4",
+    "output_video_size_mb": 52.5
+  },
+
+  "VIDEO_DETECTIONS_RESPONSE": {
+    "success": true,
+    "job_id": "video_001_202604111425",
+    "status": "completed",
+    "metadata": {
+      "total_frames": 200,
+      "fps": 30,
+      "duration_seconds": 6.67,
+      "total_detections": 8,
+      "processing_time_seconds": 45
+    },
+    "detections": [
+      {
+        "detection_id": 1,
+        "frame_id": 10,
+        "frame_timestamp": "00:00.33s",
+        "sign_id": 0,
+        "sign_class": "speed_limit_30",
+        "sign_name_vi": "Giới hạn tốc độ 30 km/h",
+        "confidence": 0.985,
+        "bbox": { "x": 45, "y": 30, "width": 120, "height": 135 },
+        "guidance_vi": "Giới hạn tốc độ 30 km/h",
+        "audio_file": "output/audio/sign_0_speed_limit_30.wav"
+      },
+      {
+        "detection_id": 2,
+        "frame_id": 45,
+        "frame_timestamp": "01:30.00s",
+        "sign_id": 14,
+        "sign_class": "stop",
+        "sign_name_vi": "Stop - Dừng lại",
+        "confidence": 0.872,
+        "bbox": { "x": 100, "y": 200, "width": 90, "height": 90 },
+        "guidance_vi": "Dừng lại hoàn toàn tại dòng kẻ xin dừng",
+        "audio_file": "output/audio/sign_14_stop.wav"
+      },
+      {
+        "detection_id": 3,
+        "frame_id": 78,
+        "frame_timestamp": "02:36.00s",
+        "sign_id": 25,
+        "sign_class": "road_work",
+        "sign_name_vi": "Cảnh báo: Công trường",
+        "confidence": 0.921,
+        "bbox": { "x": 200, "y": 150, "width": 110, "height": 110 },
+        "guidance_vi": "Cảnh báo: Khu vực công trường, mật độ giao thông đông",
+        "audio_file": "output/audio/sign_25_road_work.wav"
+      },
+      {
+        "detection_id": 4,
+        "frame_id": 130,
+        "frame_timestamp": "04:20.00s",
+        "sign_id": 1,
+        "sign_class": "speed_limit_50",
+        "sign_name_vi": "Giới hạn tốc độ 50 km/h",
+        "confidence": 0.957,
+        "bbox": { "x": 80, "y": 100, "width": 125, "height": 125 },
+        "guidance_vi": "Giới hạn tốc độ 50 km/h - Khu vực gần trung tâm thành phố",
+        "audio_file": "output/audio/sign_1_speed_limit_50.wav"
+      },
+      {
+        "detection_id": 5,
+        "frame_id": 156,
+        "frame_timestamp": "05:12.00s",
+        "sign_id": 9,
+        "sign_class": "no_passing",
+        "sign_name_vi": "Cấm vượt",
+        "confidence": 0.813,
+        "bbox": { "x": 150, "y": 120, "width": 100, "height": 100 },
+        "guidance_vi": "Cấm vượt - Khu vực nguy hiểm, không được phép vượt",
+        "audio_file": "output/audio/sign_9_no_passing.wav"
+      }
+    ],
+    "output_video_url": "/outputs/videos/processed_video_001.mp4",
+    "output_video_size_mb": 52.5
+  },
+
+  "WEBCAM_STREAM_FRAME": {
+    "_comment": "Gửi qua WebSocket mỗi 33ms (~30 FPS)",
+    "timestamp": "2026-04-11T14:25:33.123Z",
+    "frame_number": 720,
+    "frame_base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+    "detection_present": true,
+    "current_detection": {
+      "sign_id": 1,
+      "sign_class": "speed_limit_50",
+      "sign_name_vi": "Giới hạn tốc độ 50 km/h",
+      "confidence": 0.942,
+      "bbox": { "x": 200, "y": 150, "width": 150, "height": 150 },
+      "guidance_vi": "Giới hạn tốc độ 50 km/h"
+    },
+    "performance_metrics": {
+      "fps": 24,
+      "inference_latency_ms": 120,
+      "queue_latency_ms": 15,
+      "total_latency_ms": 135,
+      "gpu_memory_mb": 1024,
+      "cpu_percent": 35.2
+    },
+    "session_statistics": {
+      "total_frames_processed": 720,
+      "total_detections": 5,
+      "average_fps": 24.3,
+      "session_duration_seconds": 30,
+      "current_detection_streak": 3
+    },
+    "detection_history": [
+      {
+        "relative_time_seconds": 0,
+        "sign_name_vi": "Giới hạn tốc độ 50 km/h",
+        "confidence": 0.942,
+        "duration_frames": 12
+      },
+      {
+        "relative_time_seconds": 0.5,
+        "sign_name_vi": "Giới hạn tốc độ 30 km/h",
+        "confidence": 0.865,
+        "duration_frames": 8
+      },
+      {
+        "relative_time_seconds": 1.2,
+        "sign_name_vi": "Cảnh báo: Trẻ em",
+        "confidence": 0.921,
+        "duration_frames": 15
+      }
+    ]
+  },
+
+  "SIGN_LABELS_MAPPING": {
+    "_comment": "43 traffic sign classes - map sign_id to Vietnamese name",
+    "0": { "name_vi": "Giới hạn tốc độ 20 km/h", "name_en": "Speed Limit 20 km/h", "color": "#e74c3c" },
+    "1": { "name_vi": "Giới hạn tốc độ 30 km/h", "name_en": "Speed Limit 30 km/h", "color": "#e74c3c" },
+    "2": { "name_vi": "Giới hạn tốc độ 50 km/h", "name_en": "Speed Limit 50 km/h", "color": "#e74c3c" },
+    "3": { "name_vi": "Giới hạn tốc độ 60 km/h", "name_en": "Speed Limit 60 km/h", "color": "#e74c3c" },
+    "4": { "name_vi": "Giới hạn tốc độ 70 km/h", "name_en": "Speed Limit 70 km/h", "color": "#e74c3c" },
+    "5": { "name_vi": "Giới hạn tốc độ 80 km/h", "name_en": "Speed Limit 80 km/h", "color": "#e74c3c" },
+    "8": { "name_vi": "Giới hạn tốc độ 120 km/h", "name_en": "Speed Limit 120 km/h", "color": "#e74c3c" },
+    "9": { "name_vi": "Cấm vượt", "name_en": "No Passing", "color": "#e74c3c" },
+    "10": { "name_vi": "Cấm vượt (xe tải)", "name_en": "No Passing (Trucks)", "color": "#e74c3c" },
+    "14": { "name_vi": "Stop - Dừng lại", "name_en": "Stop Sign", "color": "#e74c3c" },
+    "15": { "name_vi": "Đường cấm", "name_en": "No Entry", "color": "#e74c3c" },
+    "17": { "name_vi": "Cảnh báo: Trẻ em", "name_en": "Children Crossing", "color": "#f39c12" },
+    "25": { "name_vi": "Cảnh báo: Công trường", "name_en": "Road Work", "color": "#f39c12" },
+    "26": { "name_vi": "Cảnh báo: Giao lộ", "name_en": "Intersection Ahead", "color": "#f39c12" },
+    "28": { "name_vi": "Cảnh báo: Đường hẹp", "name_en": "Narrow Road", "color": "#f39c12" },
+    "30": { "name_vi": "Giới hạn tốc độ cuối cùng", "name_en": "End of Speed Limit", "color": "#ecf0f1" },
+    "35": { "name_vi": "Hướng phải", "name_en": "Keep Right", "color": "#3498db" },
+    "38": { "name_vi": "Hướng trái hoặc phải", "name_en": "Keep Left or Right", "color": "#3498db" },
+    "40": { "name_vi": "Vòng xuyển", "name_en": "Roundabout", "color": "#3498db" }
+  },
+
+  "ERROR_RESPONSES": {
+    "invalid_file_format": {
+      "success": false,
+      "error_code": "INVALID_FILE",
+      "error_message": "Định dạng file không hỗ trợ. Vui lòng sử dụng JPG hoặc PNG.",
+      "supported_formats": ["image/jpeg", "image/png"],
+      "provided_format": "image/gif"
+    },
+    "file_too_large": {
+      "success": false,
+      "error_code": "FILE_TOO_LARGE",
+      "error_message": "File quá lớn (tối đa 50MB cho video, 10MB cho ảnh)",
+      "max_size_mb": 50,
+      "provided_size_mb": 105.3
+    },
+    "model_not_loaded": {
+      "success": false,
+      "error_code": "MODEL_ERROR",
+      "error_message": "Model chưa được tải. Vui lòng thử lại sau vài giây.",
+      "retry_after_seconds": 10
+    },
+    "processing_timeout": {
+      "success": false,
+      "error_code": "TIMEOUT",
+      "error_message": "Xử lý vượt quá thời gian cho phép (300 giây)",
+      "timeout_seconds": 300
+    },
+    "gpu_memory_exceeded": {
+      "success": false,
+      "error_code": "GPU_ERROR",
+      "error_message": "GPU memory không đủ. Vui lòng thử lại hoặc sử dụng file nhỏ hơn.",
+      "available_memory_mb": 256,
+      "required_memory_mb": 512
+    }
+  },
+
+  "HEALTH_CHECK_RESPONSE": {
+    "status": "healthy",
+    "timestamp": "2026-04-11T14:25:33Z",
+    "services": {
+      "api": "healthy",
+      "database": "healthy",
+      "model": "loaded",
+      "gpu": {
+        "status": "available",
+        "device": "NVIDIA RTX 4090",
+        "memory_available_mb": 20480,
+        "memory_total_mb": 24576,
+        "utilization_percent": 45.2
+      }
+    },
+    "queue": {
+      "pending_jobs": 2,
+      "average_wait_seconds": 30,
+      "max_concurrent_jobs": 5
+    }
+  }
+}
