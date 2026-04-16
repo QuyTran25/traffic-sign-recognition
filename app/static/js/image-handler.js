@@ -52,31 +52,52 @@ function clearImage() {
 }
 
 /**
- * Dự đoán ảnh bằng API phía sau
+ * Dự đoán ảnh bằng API phía sau (Đã chỉnh sửa để hoạt động độc lập)
  */
 async function predictImage() {
     const imageInput = document.getElementById('imageInput');
     const predictBtn = document.getElementById('predictBtn');
     const imageResults = document.getElementById('imageResults');
 
-    if (!imageInput.files[0]) {
-        showError('Vui lòng chọn ảnh trước');
+    // Khai báo biến file rõ ràng ngay từ đầu
+    const file = imageInput.files[0]; 
+
+    if (!file) {
+        alert('Vui lòng chọn ảnh trước');
         return;
     }
 
     try {
-        // Vô hiệu hóa nút trong quá trình xử lý
+        // Vô hiệu hóa nút trong quá trình xử lý để tránh spam click
         predictBtn.disabled = true;
-        showLoading('Đang dự đoán ảnh...');
+        imageResults.innerHTML = '<div style="text-align: center; padding: 20px;">Đang dự đoán ảnh... ⏳</div>';
 
-        // Tải lên và dự đoán
-        const result = await uploadFile('/predict-image', imageInput);
+        // 1. Tạo đối tượng FormData để chứa ảnh
+        const formData = new FormData();
+        formData.append("file", file); // Sử dụng đúng biến file đã khai báo ở trên
 
-        // Hiển thị kết quả
+        // 2. Gửi ảnh trực tiếp đến Flask
+        const response = await fetch('/api/predict-image', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error(`Lỗi máy chủ: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        // 3. Hiển thị kết quả
         displayImageResults(result);
-        showSuccess('Dự đoán đã hoàn tất!');
+
     } catch (error) {
-        showError(error.message);
+        console.error("Lỗi khi dự đoán:", error);
+        imageResults.innerHTML = `
+            <div class="result-card" style="color: red; border: 1px solid red; padding: 15px;">
+                <h3>Lỗi xử lý</h3>
+                <p>${error.message || 'Không thể kết nối đến máy chủ. Vui lòng thử lại.'}</p>
+            </div>`;
     } finally {
         predictBtn.disabled = false;
     }

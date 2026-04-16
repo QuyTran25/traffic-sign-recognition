@@ -95,7 +95,7 @@ async function pollStatus(endpoint, interval = 1000, maxAttempts = 300) {
         poll();
     });
 }
-}
+
 
 /**
  * Get mock data (for testing without backend)
