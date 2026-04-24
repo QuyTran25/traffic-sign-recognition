@@ -52,7 +52,6 @@ data/test/
 # Model and outputs
 output/model.pth
 output/training_log.json
-output/audio/*.mp3
 output/images/
 
 # Test data
