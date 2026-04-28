@@ -1,25 +1,25 @@
 {
-  "0": "Biển báo: Giới hạn tốc độ (20km/h). Người điều khiển phương tiện phải giảm tốc độ xuống tối đa 20 km/h khi đi vào khu vực này. Thường là nơi đông dân cư. Hãy quan sát kỹ xung quanh và giữ khoảng cách an toàn để tránh va chạm.",
+  "0": "Biển báo: Giới hạn tốc độ (20kilômét trên giờ). Người điều khiển phương tiện phải giảm tốc độ xuống tối đa 20 kilômét trên giờ khi đi vào khu vực này. Thường là nơi đông dân cư. Hãy quan sát kỹ xung quanh và giữ khoảng cách an toàn để tránh va chạm.",
   
-  "1": "Biển báo: Giới hạn tốc độ (30km/h). Người lái xe cần duy trì tốc độ không vượt quá 30 km/h. Khu vực này có thể có nhiều phương tiện hoặc người đi bộ. Luôn chú ý quan sát hai bên đường và sẵn sàng xử lý tình huống bất ngờ.",
+  "1": "Biển báo: Giới hạn tốc độ (30kilômét trên giờ). Người lái xe cần duy trì tốc độ không vượt quá 30 kilômét trên giờ. Khu vực này có thể có nhiều phương tiện hoặc người đi bộ. Luôn chú ý quan sát hai bên đường và sẵn sàng xử lý tình huống bất ngờ.",
   
-  "2": "Biển báo: Giới hạn tốc độ (50km/h). Người điều khiển cần giữ tốc độ tối đa 50 km/h khi lưu thông. Đây thường là khu vực đô thị. Hãy tuân thủ đúng tốc độ và giữ khoảng cách an toàn để tránh tai nạn giao thông.",
+  "2": "Biển báo: Giới hạn tốc độ (50kilômét trên giờ). Người điều khiển cần giữ tốc độ tối đa 50 kilômét trên giờ khi lưu thông. Đây thường là khu vực đô thị. Hãy tuân thủ đúng tốc độ và giữ khoảng cách an toàn để tránh tai nạn giao thông.",
   
-  "3": "Biển báo: Giới hạn tốc độ (60km/h). Người lái xe cần điều khiển phương tiện không vượt quá 60 km/h. Hãy chú ý quan sát giao thông phía trước và giữ khoảng cách hợp lý để đảm bảo an toàn khi di chuyển.",
+  "3": "Biển báo: Giới hạn tốc độ (60kilômét trên giờ). Người lái xe cần điều khiển phương tiện không vượt quá 60 kilômét trên giờ. Hãy chú ý quan sát giao thông phía trước và giữ khoảng cách hợp lý để đảm bảo an toàn khi di chuyển.",
   
-  "4": "Biển báo: Giới hạn tốc độ (70km/h). Người điều khiển phải duy trì tốc độ dưới 70 km/h. Đường có thể có nhiều phương tiện di chuyển nhanh. Hãy giữ tay lái chắc chắn và tránh tăng tốc đột ngột gây nguy hiểm.",
+  "4": "Biển báo: Giới hạn tốc độ (70kilômét trên giờ). Người điều khiển phải duy trì tốc độ dưới 70 kilômét trên giờ. Đường có thể có nhiều phương tiện di chuyển nhanh. Hãy giữ tay lái chắc chắn và tránh tăng tốc đột ngột gây nguy hiểm.",
   
-  "5": "Biển báo: Giới hạn tốc độ (80km/h). Người lái xe cần giữ tốc độ không vượt quá 80 km/h. Dù đường thông thoáng, vẫn cần tập trung lái xe và giữ khoảng cách với phương tiện phía trước để đảm bảo an toàn.",
+  "5": "Biển báo: Giới hạn tốc độ (80kilômét trên giờ). Người lái xe cần giữ tốc độ không vượt quá 80 kilômét trên giờ. Dù đường thông thoáng, vẫn cần tập trung lái xe và giữ khoảng cách với phương tiện phía trước để đảm bảo an toàn.",
   
-  "6": "Biển báo: Hết hạn chế tốc độ (80km/h). Bạn đã ra khỏi khu vực bị giới hạn tốc độ trước đó. Tuy nhiên, vẫn cần điều khiển phương tiện phù hợp với điều kiện giao thông. Không nên tăng tốc đột ngột gây mất kiểm soát.",
+  "6": "Biển báo: Hết hạn chế tốc độ (80kilômét trên giờ). Bạn đã ra khỏi khu vực bị giới hạn tốc độ trước đó. Tuy nhiên, vẫn cần điều khiển phương tiện phù hợp với điều kiện giao thông. Không nên tăng tốc đột ngột gây mất kiểm soát.",
   
-  "7": "Biển báo: Giới hạn tốc độ (100km/h). Người điều khiển phương tiện được phép chạy tối đa 100 km/h. Thường áp dụng trên đường cao tốc. Hãy giữ khoảng cách an toàn và luôn chú ý các phương tiện xung quanh.",
+  "7": "Biển báo: Giới hạn tốc độ (100kilômét trên giờ). Người điều khiển phương tiện được phép chạy tối đa 100 kilômét trên giờ. Thường áp dụng trên đường cao tốc. Hãy giữ khoảng cách an toàn và luôn chú ý các phương tiện xung quanh.",
   
-  "8": "Biển báo: Giới hạn tốc độ (120km/h). Đây là tốc độ tối đa cho phép trên đoạn đường này. Người lái cần giữ tốc độ ổn định, tập trung cao độ và tránh sử dụng điện thoại khi đang điều khiển phương tiện.",
+  "8": "Biển báo: Giới hạn tốc độ (120kilômét trên giờ). Đây là tốc độ tối đa cho phép trên đoạn đường này. Người lái cần giữ tốc độ ổn định, tập trung cao độ và tránh sử dụng điện thoại khi đang điều khiển phương tiện.",
   
   "9": "Biển báo: Cấm vượt. Người điều khiển không được phép vượt xe khác trong khu vực này. Đường có thể nguy hiểm hoặc tầm nhìn hạn chế. Hãy giữ đúng làn đường và kiên nhẫn di chuyển để đảm bảo an toàn.",
   
-  "10": "Biển báo: Cấm xe tải trên 3.5 tấn vượt. Xe tải lớn không được phép vượt các phương tiện khác. Điều này giúp giảm nguy cơ tai nạn. Người điều khiển xe tải cần tuân thủ nghiêm túc quy định này.",
+  "10": "Biển báo: Cấm xe tải trên 3 chấm 5 tấn vượt. Xe tải lớn không được phép vượt các phương tiện khác. Điều này giúp giảm nguy cơ tai nạn. Người điều khiển xe tải cần tuân thủ nghiêm túc quy định này.",
   
   "11": "Biển báo: Ưu tiên tại nơi đường giao nhau. Bạn có quyền ưu tiên khi đi qua giao lộ. Tuy nhiên vẫn cần quan sát kỹ các hướng khác. Không nên chủ quan vì các phương tiện khác có thể không nhường đường.",
   
