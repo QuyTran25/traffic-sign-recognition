@@ -1,0 +1,59 @@
+{
+  "gamma": 0.85,
+  "clahe_clip_limit": 2.0,
+  "clahe_grid_size": 8,
+  "denoise": "median",
+  "denoise_ksize": 3,
+
+  "red_1": [0, 70, 50],
+  "red_2": [10, 255, 255],
+  "red_3": [170, 70, 50],
+  "red_4": [180, 255, 255],
+  "blue_1": [90, 60, 50],
+  "blue_2": [130, 255, 255],
+  "yellow_1": [15, 70, 50],
+  "yellow_2": [35, 255, 255],
+
+  "morph_kernel": 3,
+  "morph_open_iter": 1,
+  "morph_close_iter": 2,
+
+  "canny_low": 80,
+  "canny_high": 160,
+  "edge_dilate_iter": 1,
+
+  "polygon_eps_ratio": 0.03,
+  "use_hough_circle": true,
+  "use_hough_lines": true,
+  "hough_max_dim": 720,
+  "hough_dp": 1.2,
+  "hough_param1": 120,
+  "hough_param2": 28,
+  "hough_min_radius": 8,
+  "hough_max_radius": 0,
+
+  "hough_lines_rho": 1.0,
+  "hough_lines_theta_deg": 1.0,
+  "hough_lines_threshold": 60,
+  "hough_lines_min_line_length": 25,
+  "hough_lines_max_line_gap": 8,
+
+  "min_area_ratio": 0.0001,
+  "min_area_abs": 50,
+  "min_side": 12,
+  "aspect_min": 0.4,
+  "aspect_max": 1.8,
+  "nms_iou": 0.35,
+  "bbox_pad_ratio": 0.25,
+
+  "w_color": 0.45,
+  "w_shape": 0.35,
+  "w_edge": 0.2,
+
+  "min_color_ratio": 0.05,
+  "min_circularity": 0.15,
+  "min_fill": 0.12,
+  "min_solidity": 0.0,
+
+  "det_threshold": 0.25
+}
