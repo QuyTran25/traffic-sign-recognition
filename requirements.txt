@@ -1,6 +1,7 @@
 # Deep Learning & Model
 torch>=2.0.0
 torchvision>=0.15.0
+ultralytics>=8.2.0
 
 # Web Framework
 Flask>=2.3.0
