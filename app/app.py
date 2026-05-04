@@ -24,7 +24,7 @@ app.config.from_object(Config)
 # KHỞI TẠO MÔ HÌNH AI (PYTORCH)
 # ============================================
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-NUM_CLASSES = 43 # SỬA THÀNH 43 Ở ĐÂY
+NUM_CLASSES = 44 # Sửa thành 44 (43 biển báo + 1 lớp Background)
 
 # Xây dựng lại cấu trúc mạng MobileNetV2
 model = models.mobilenet_v2(weights=None)
@@ -88,16 +88,22 @@ def health_check():
 @app.route('/api/predict-image', methods=['POST'])
 def predict_image():
     """
-    Dự đoán biển báo giao thông từ ảnh tải lên (Đã kết nối AI thật)
+    Dự đoán biển báo giao thông từ ảnh tải lên (Đã kết nối AI thật và Lọc Background)
     """
     try:
         if 'file' not in request.files:
             return jsonify({'success': False, 'error_message': 'Không có tệp nào được cung cấp'}), 400
         
         file = request.files['file']
+        if file.filename == '':
+            return jsonify({'success': False, 'error_message': 'Tên tệp không hợp lệ'}), 400
+            
+        # Kiểm tra định dạng ảnh cơ bản
+        allowed_extensions = {'png', 'jpg', 'jpeg'}
+        if not ('.' in file.filename and file.filename.rsplit('.', 1)[1].lower() in allowed_extensions):
+            return jsonify({'success': False, 'error_message': 'Chỉ chấp nhận file ảnh (png, jpg, jpeg)'}), 400
         
         # 1. Đọc ảnh từ file tải lên
-        image_bytes = file.read()
         image = Image.open(file).convert('RGB')
         
         # 2. Tiền xử lý ảnh (chuyển thành tensor)
@@ -109,30 +115,37 @@ def predict_image():
             probabilities = torch.nn.functional.softmax(outputs[0], dim=0)
             confidence, predicted = torch.max(probabilities, 0)
         
-        class_id = predicted.item() # Ví dụ AI trả ra số 34
+        class_id = predicted.item() 
+        confidence_score = float(confidence.item())
         
-        # --- BƯỚC GIẢI MÃ: CHUYỂN VỊ TRÍ ABC VỀ ID THẬT ---
-        # Đây là thứ tự chính xác 100% mà PyTorch đã đọc các thư mục
+        # --- BƯỚC GIẢI MÃ ---
         PYTORCH_CLASSES = [
             0, 1, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 
             2, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 
             3, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 
-            4, 40, 41, 42, 5, 6, 7, 8, 9
+            4, 40, 41, 42, 43, 5, 6, 7, 8, 9
         ]
         
-        # Lấy ID thư mục thực tế
         real_class_id = PYTORCH_CLASSES[class_id]
         
-        # 4. Lấy tên biển báo theo ID thật (real_class_id)
-        sign_name = SIGN_NAMES.get(real_class_id, f"Biển báo ID: {real_class_id}")
+        # --- BƯỚC LỌC BACKGROUND & ĐỘ TIN CẬY ---
+        THRESHOLD = 0.70 # Ngưỡng tin cậy 70%
+        
+        if real_class_id == 43 or confidence_score < THRESHOLD:
+            sign_name = "Không phải biển báo giao thông"
+            guidance = "AI không nhận diện được biển báo giao thông hợp lệ trong bức ảnh này hoặc độ tin cậy quá thấp."
+            real_class_id = -1 # Gán -1 để web biết là không có biển báo
+        else:
+            sign_name = SIGN_NAMES.get(real_class_id, f"Biển báo ID: {real_class_id}")
+            guidance = f'AI nhận diện đây là {sign_name}. Hãy tuân thủ luật giao thông nhé!'
         
         return jsonify({
             'success': True,
             'message': 'Dự đoán thành công',
-            'sign_id': class_id,
+            'sign_id': real_class_id,
             'sign_name_vi': sign_name,
-            'confidence': float(confidence.item()),
-            'guidance_vi': f'AI nhận diện đây là {sign_name}. Hãy tuân thủ luật giao thông nhé!',
+            'confidence': float(confidence_score), # Trả về số % đẹp (vd: 85.5)
+            'guidance_vi': guidance,
             'audio_file': ''
         }), 200
         
