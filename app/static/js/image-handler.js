@@ -112,50 +112,106 @@ function displayImageResults(result) {
     if (!result.success) {
         imageResults.innerHTML = `
             <div class="result-card">
-                <h3>Prediction Error</h3>
-                <p>${result.error_message || 'An error occurred'}</p>
+                <h3>Lỗi Dự đoán</h3>
+                <p>${result.error_message || 'Có lỗi xảy ra'}</p>
             </div>
         `;
         return;
     }
 
-    // Build confidence gauge HTML
-    const confidenceClass = getConfidenceClass(result.confidence);
-    const confidencePercent = formatConfidence(result.confidence);
+    // Get detections array
+    const detections = result.detections || [];
+    
+    if (detections.length === 0) {
+        imageResults.innerHTML = `
+            <div class="result-card">
+                <h3>Không Phát Hiện</h3>
+                <p>Không tìm thấy biển báo nào trong ảnh</p>
+            </div>
+        `;
+        return;
+    }
 
-    // Build results HTML
-    const resultsHTML = `
+    // Build results HTML for each detection
+    let resultsHTML = `
         <div class="result-card">
-            <h3>Detection Results</h3>
-            <div class="result-item">
-                <span class="result-label">Traffic Sign:</span>
-                <span class="result-value">${result.sign_name_vi}</span>
+            <h3>Kết quả Phát hiện (${detections.length} biển báo)</h3>
+            <div class="detections-list">
+    `;
+
+    detections.forEach((det, index) => {
+        const classifierConf = det.classifier_confidence || 0;
+        const detectorConf = det.detector_confidence || 0;
+        const confidencePercent = (classifierConf * 100).toFixed(1);
+        const confidenceClass = classifierConf > 0.7 ? 'high' : classifierConf > 0.5 ? 'medium' : 'low';
+        const audioFile = det.audio_file || '';
+        
+        // Build audio player HTML if audio exists
+        let audioHTML = '';
+        if (audioFile) {
+            audioHTML = `
+                <div class="result-item" style="margin-top: 10px;">
+                    <span class="result-label">🔊 Âm thanh:</span>
+                    <audio style="width: 100%; height: 30px;" controls>
+                        <source src="/api/audio/${audioFile}" type="audio/mpeg">
+                        Trình duyệt không hỗ trợ phát audio
+                    </audio>
+                </div>
+            `;
+        }
+
+        resultsHTML += `
+            <div class="detection-item" style="border-bottom: 1px solid #eee; padding: 15px 0; margin-bottom: 15px;">
+                <div class="result-item">
+                    <span class="result-label">Biển báo ${index + 1}:</span>
+                    <span class="result-value">${det.sign_name || 'Unknown'}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">ID:</span>
+                    <span class="result-value">${det.sign_id}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Độ tin cây (Classifier):</span>
+                    <span class="result-value">${confidencePercent}%</span>
+                </div>
+                <div class="confidence-gauge">
+                    <div class="confidence-bar ${confidenceClass}" style="width: ${classifierConf * 100}%;"></div>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Độ tin cây (Detector):</span>
+                    <span class="result-value">${(detectorConf * 100).toFixed(1)}%</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Vị trí BBox:</span>
+                    <span class="result-value">${JSON.stringify(det.bbox)}</span>
+                </div>
+                ${audioHTML}
             </div>
-            <div class="result-item">
-                <span class="result-label">Confidence:</span>
-                <span class="result-value">${confidencePercent}</span>
-            </div>
-            <div class="confidence-gauge">
-                <div class="confidence-bar ${confidenceClass}" style="width: ${result.confidence * 100}%;"></div>
+        `;
+    });
+
+    resultsHTML += `
             </div>
         </div>
 
-        <div class="guidance-box">
-            <strong>Guidance:</strong><br>
-            ${result.guidance_vi}
-        </div>
-
-        <div class="audio-section">
-            <label>Audio Guidance</label>
-            <audio id="imageAudio" class="audio-player" controls preload="auto">
-                <source src="${result.audio_file}" type="audio/mpeg">
-            </audio>
+        <div class="guidance-box" style="margin-top: 20px;">
+            <strong>Hướng dẫn an toàn:</strong><br>
+            <p>${detections[0].guidance || 'Không có hướng dẫn'}</p>
+            ${detections[0].audio_file ? `
+            <div style="margin-top: 15px;">
+                <strong>🔊 Nghe hướng dẫn:</strong><br>
+                <audio style="width: 100%; height: 35px; margin-top: 10px;" controls autoplay>
+                    <source src="/api/audio/${detections[0].audio_file}" type="audio/mpeg">
+                    Trình duyệt không hỗ trợ phát audio
+                </audio>
+            </div>
+            ` : ''}
         </div>
     `;
 
     imageResults.innerHTML = resultsHTML;
 
-    console.log('✅ Results displayed:', result);
+    console.log('✅ Kết quả được hiển thị:', result);
 }
 
 // Initialize image handlers on page load

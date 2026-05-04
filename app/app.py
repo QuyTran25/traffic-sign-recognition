@@ -1,16 +1,56 @@
 """
-Ứng dụng Flask cho Hệ thống Nhận diện Biển báo Giao thông
+Flask API cho Traffic Sign Recognition System
+Integrate Detection + Classification + Audio
 """
 
 import io
+import json
+import os
+from pathlib import Path
+from typing import Dict, Tuple
+
+import cv2
+import numpy as np
 from PIL import Image
 import torch
 import torchvision.transforms as transforms
 from torchvision import models
-from flask import Flask, render_template, request, jsonify
+
+from flask import Flask, render_template, request, jsonify, send_file
 from flask_cors import CORS
 from config import Config
-import os
+
+# Thêm src directory vào path
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+
+try:
+    from classical_detector import detect_classical, load_params
+except ImportError:
+    print("⚠ classical_detector not available")
+    detect_classical = None
+    load_params = None
+
+try:
+    from tts_engine import generate_audio_file
+except ImportError:
+    print("⚠ tts_engine not available")
+    generate_audio_file = None
+
+# ============================================
+# Configuration
+# ============================================
+BASE_DIR = Path(__file__).parent.parent
+OUTPUT_DIR = BASE_DIR / "output"
+AUDIO_DIR = OUTPUT_DIR / "audio"
+
+MODEL_PATH = OUTPUT_DIR / "model.pth"
+DETECTOR_CONFIG_PATH = BASE_DIR / "configs" / "classical_detector.json"
+SIGN_LABELS_FILE = BASE_DIR / "sign_labels_vi.json"
+GUIDANCE_TEXTS_FILE = BASE_DIR / "guidance_texts_vi.json"
+
+NUM_CLASSES = 43
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Initialize Flask app
 app = Flask(__name__, 
@@ -20,249 +60,390 @@ app = Flask(__name__,
 
 # Load configuration
 app.config.from_object(Config)
-# ============================================
-# KHỞI TẠO MÔ HÌNH AI (PYTORCH)
-# ============================================
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-NUM_CLASSES = 43 # SỬA THÀNH 43 Ở ĐÂY
-
-# Xây dựng lại cấu trúc mạng MobileNetV2
-model = models.mobilenet_v2(weights=None)
-model.classifier[1] = torch.nn.Linear(model.last_channel, NUM_CLASSES)
-
-# Tải trọng số từ file model.pth
-model_path = os.path.join(os.path.dirname(__file__), '..', 'output', 'model.pth')
-model.load_state_dict(torch.load(model_path, map_location=device))
-model.eval() # Chuyển sang chế độ test
-
-# Phép biến đổi ảnh
-transform = transforms.Compose([
-    transforms.Resize((64, 64)),
-    transforms.ToTensor(),
-    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-])
-
-# Từ điển 43 loại biển báo (chuẩn GTSRB)
-SIGN_NAMES = {
-    0: 'Giới hạn tốc độ (20km/h)', 1: 'Giới hạn tốc độ (30km/h)', 2: 'Giới hạn tốc độ (50km/h)',
-    3: 'Giới hạn tốc độ (60km/h)', 4: 'Giới hạn tốc độ (70km/h)', 5: 'Giới hạn tốc độ (80km/h)',
-    6: 'Hết giới hạn tốc độ (80km/h)', 7: 'Giới hạn tốc độ (100km/h)', 8: 'Giới hạn tốc độ (120km/h)',
-    9: 'Cấm vượt', 10: 'Cấm xe tải vượt', 11: 'Giao nhau với đường không ưu tiên',
-    12: 'Đường ưu tiên', 13: 'Nhường đường', 14: 'Dừng lại (STOP)',
-    15: 'Cấm mọi phương tiện', 16: 'Cấm xe tải', 17: 'Cấm đi ngược chiều',
-    18: 'Nguy hiểm khác', 19: 'Đường cong vòng sang trái', 20: 'Đường cong vòng sang phải',
-    21: 'Nhiều khúc cua liên tiếp', 22: 'Đường gồ ghề', 23: 'Đường trơn trượt',
-    24: 'Đường hẹp bên phải', 25: 'Công trường', 26: 'Có tín hiệu đèn giao thông',
-    27: 'Người đi bộ cắt ngang', 28: 'Trẻ em cắt ngang', 29: 'Người đi xe đạp cắt ngang',
-    30: 'Cảnh báo băng tuyết', 31: 'Thú rừng vượt qua đường', 32: 'Hết mọi lệnh cấm/giới hạn',
-    33: 'Chỉ được rẽ phải', 34: 'Chỉ được rẽ trái', 35: 'Chỉ được đi thẳng',
-    36: 'Chỉ được đi thẳng hoặc rẽ phải', 37: 'Chỉ được đi thẳng hoặc rẽ trái',
-    38: 'Đi vòng sang phải', 39: 'Đi vòng sang trái', 40: 'Vòng xuyến',
-    41: 'Hết cấm vượt', 42: 'Hết cấm xe tải vượt'
-}
-# Enable CORS
 CORS(app)
 
+print(f"Device: {DEVICE}")
+
 # ============================================
-# CÁC TUYẾN ĐƯỜNG
+# Load Labels & Guidance
+# ============================================
+try:
+    with open(SIGN_LABELS_FILE, 'r', encoding='utf-8') as f:
+        SIGN_LABELS = json.load(f)
+    print(f"✓ Loaded {len(SIGN_LABELS)} sign labels")
+except Exception as e:
+    print(f"⚠ Failed to load sign labels: {e}")
+    SIGN_LABELS = {str(i): f"Sign {i}" for i in range(43)}
+
+try:
+    with open(GUIDANCE_TEXTS_FILE, 'r', encoding='utf-8') as f:
+        GUIDANCE_TEXTS = json.load(f)
+    print(f"✓ Loaded guidance texts")
+except Exception as e:
+    print(f"⚠ Failed to load guidance texts: {e}")
+    GUIDANCE_TEXTS = {str(i): f"Hãy tuân thủ biển báo {i}" for i in range(43)}
+
+# ============================================
+# Load Classifier Model
+# ============================================
+print("\n🔧 Loading Classifier Model...")
+classifier = None
+try:
+    if os.path.exists(MODEL_PATH):
+        classifier = models.mobilenet_v2(weights=None)
+        classifier.classifier[1] = torch.nn.Linear(classifier.last_channel, NUM_CLASSES)
+        classifier.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE))
+        classifier.eval()
+        classifier = classifier.to(DEVICE)
+        print(f"✓ Classifier loaded from {MODEL_PATH}")
+    else:
+        print(f"⚠ Model file not found: {MODEL_PATH}")
+        print(f"   Run: python prepare_classification_data.py && python src/train.py")
+except Exception as e:
+    print(f"⚠ Failed to load classifier: {e}")
+
+# ============================================
+# Load Detector
+# ============================================
+print("\n🔧 Loading Detector...")
+detector_params = None
+try:
+    if load_params and os.path.exists(DETECTOR_CONFIG_PATH):
+        detector_params = load_params(DETECTOR_CONFIG_PATH)
+        print(f"✓ Detector config loaded")
+    else:
+        print(f"⚠ Detector config not found: {DETECTOR_CONFIG_PATH}")
+except Exception as e:
+    print(f"⚠ Failed to load detector: {e}")
+
+# ============================================
+# Image Transform for Classifier
+# ============================================
+classifier_transform = transforms.Compose([
+    transforms.Resize((64, 64)),
+    transforms.ToTensor(),
+    transforms.Normalize(
+        mean=[0.485, 0.456, 0.406],
+        std=[0.229, 0.224, 0.225]
+    )
+])
+
+# ============================================
+# Helper Functions
+# ============================================
+
+def classify_crop(crop_pil: Image.Image) -> Tuple[int, float]:
+    """
+    Classify a single traffic sign crop
+    Returns: (class_id, confidence)
+    """
+    if classifier is None:
+        return -1, 0.0
+    
+    try:
+        tensor = classifier_transform(crop_pil).unsqueeze(0).to(DEVICE)
+        with torch.no_grad():
+            outputs = classifier(tensor)
+            probabilities = torch.nn.functional.softmax(outputs[0], dim=0)
+            confidence, predicted = torch.max(probabilities, 0)
+        
+        class_id = int(predicted.item())
+        confidence_score = float(confidence.item())
+        
+        return class_id, confidence_score
+    except Exception as e:
+        print(f"Classification error: {e}")
+        return -1, 0.0
+
+def get_sign_info(class_id: int) -> Dict[str, str]:
+    """Get sign name and guidance text"""
+    sign_id_str = str(class_id)
+    
+    sign_name = SIGN_LABELS.get(sign_id_str, f"Biển báo {class_id}")
+    guidance = GUIDANCE_TEXTS.get(sign_id_str, f"Hãy tuân thủ quy định biển báo {class_id}")
+    
+    return {
+        "sign_name": sign_name,
+        "guidance": guidance
+    }
+
+def generate_audio(text: str, class_id: int) -> str:
+    """
+    Get audio file for traffic sign guidance
+    First tries pre-recorded audio, then TTS, then returns empty
+    Returns: audio filename (or empty string if not available)
+    """
+    try:
+        # Step 1: Check if pre-recorded audio exists
+        prerecorded_audio = AUDIO_DIR / f"sign_{class_id:02d}.mp3"
+        if prerecorded_audio.exists():
+            print(f"✓ Using pre-recorded audio: sign_{class_id:02d}.mp3")
+            return f"sign_{class_id:02d}.mp3"
+        
+        # Step 2: Try TTS generation as fallback
+        if generate_audio_file is not None:
+            audio_file = generate_audio_file(text, output_dir=str(AUDIO_DIR))
+            if audio_file:
+                print(f"✓ Generated TTS audio: {audio_file}")
+                return audio_file
+        
+        # Step 3: No audio available
+        print(f"⚠ No audio available for sign {class_id}")
+        return ""
+    
+    except Exception as e:
+        print(f"⚠ Audio retrieval failed: {e}")
+        return ""
+
+
+# ============================================
+# Routes
 # ============================================
 
 @app.route('/')
 def index():
-    """Phục vụ trang ứng dụng chính"""
+    """Serve main application"""
     return render_template('index.html')
 
-@app.route('/health')
-def health_check():
-    """Điểm cuối kiểm tra sức khỏe"""
-    return jsonify({
-        'status': 'healthy',
-        'service': 'API Hệ thống Nhận diện Biển báo Giao thông',
-        'version': '1.0.0'
-    }), 200
+@app.route('/test')
+def test_api():
+    """Serve API test page"""
+    return render_template('test_api.html')
 
-# ============================================
-# CÁC TUYẾN ĐỌC API (TRÌNH GIỮ CHỖ)
-# ============================================
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Health check endpoint"""
+    classifier_ready = classifier is not None
+    detector_ready = detector_params is not None
+    
+    return jsonify({
+        'status': 'healthy' if classifier_ready else 'degraded',
+        'service': 'Traffic Sign Recognition API',
+        'version': '2.0.0',
+        'components': {
+            'classifier': 'ready' if classifier_ready else 'not_ready',
+            'detector': 'ready' if detector_ready else 'not_ready'
+        }
+    }), 200
 
 @app.route('/api/predict-image', methods=['POST'])
 def predict_image():
     """
-    Dự đoán biển báo giao thông từ ảnh tải lên (Đã kết nối AI thật)
+    Predict traffic signs in an image
+    
+    Request:
+    - file: image file (POST multipart)
+    
+    Response:
+    {
+        "success": bool,
+        "image_size": [width, height],
+        "detections": [
+            {
+                "bbox": [x1, y1, x2, y2],
+                "confidence": float,
+                "sign_id": int,
+                "sign_name": str,
+                "guidance": str,
+                "audio_file": str
+            }
+        ],
+        "error_message": str (if failed)
+    }
     """
     try:
+        # Validate input
         if 'file' not in request.files:
-            return jsonify({'success': False, 'error_message': 'Không có tệp nào được cung cấp'}), 400
+            return jsonify({
+                'success': False,
+                'error_message': 'No file provided'
+            }), 400
         
         file = request.files['file']
+        if file.filename == '':
+            return jsonify({
+                'success': False,
+                'error_message': 'Empty file'
+            }), 400
         
-        # 1. Đọc ảnh từ file tải lên
+        # Read image
         image_bytes = file.read()
-        image = Image.open(file).convert('RGB')
+        image_pil = Image.open(io.BytesIO(image_bytes)).convert('RGB')
+        image_cv = cv2.cvtColor(np.array(image_pil), cv2.COLOR_RGB2BGR)
         
-        # 2. Tiền xử lý ảnh (chuyển thành tensor)
-        tensor = transform(image).unsqueeze(0).to(device)
+        h, w = image_cv.shape[:2]
         
-        # 3. Chạy AI suy luận
-        with torch.no_grad():
-            outputs = model(tensor)
-            probabilities = torch.nn.functional.softmax(outputs[0], dim=0)
-            confidence, predicted = torch.max(probabilities, 0)
+        detections = []
         
-        class_id = predicted.item() # Ví dụ AI trả ra số 34
+        # Step 1: Detect traffic signs in image
+        if detector_params is not None and detect_classical is not None:
+            try:
+                detector_output = detect_classical(
+                    np.array(image_pil),  # RGB format
+                    params=detector_params,
+                    return_debug=False
+                )
+                bboxes = detector_output.get('bboxes', [])
+                scores = detector_output.get('scores', [])
+            except Exception as e:
+                print(f"Detection error: {e}")
+                bboxes = []
+                scores = []
+        else:
+            bboxes = []
+            scores = []
         
-        # --- BƯỚC GIẢI MÃ: CHUYỂN VỊ TRÍ ABC VỀ ID THẬT ---
-        # Đây là thứ tự chính xác 100% mà PyTorch đã đọc các thư mục
-        PYTORCH_CLASSES = [
-            0, 1, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 
-            2, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 
-            3, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 
-            4, 40, 41, 42, 5, 6, 7, 8, 9
-        ]
-        
-        # Lấy ID thư mục thực tế
-        real_class_id = PYTORCH_CLASSES[class_id]
-        
-        # 4. Lấy tên biển báo theo ID thật (real_class_id)
-        sign_name = SIGN_NAMES.get(real_class_id, f"Biển báo ID: {real_class_id}")
+        # Step 2: Classify each detected region
+        for bbox, score in zip(bboxes, scores):
+            try:
+                x1, y1, x2, y2 = bbox
+                
+                # Extract crop
+                crop_cv = image_cv[y1:y2, x1:x2]
+                crop_pil = Image.fromarray(cv2.cvtColor(crop_cv, cv2.COLOR_BGR2RGB))
+                
+                # Classify
+                class_id, confidence = classify_crop(crop_pil)
+                
+                # Get sign info
+                sign_info = get_sign_info(class_id)
+                
+                # Generate audio
+                audio_file = generate_audio(sign_info['guidance'], class_id)
+                
+                detection = {
+                    "bbox": [int(x1), int(y1), int(x2), int(y2)],
+                    "detector_confidence": float(score),
+                    "classifier_confidence": float(confidence),
+                    "sign_id": int(class_id),
+                    "sign_name": sign_info['sign_name'],
+                    "guidance": sign_info['guidance'],
+                    "audio_file": audio_file
+                }
+                detections.append(detection)
+            except Exception as e:
+                print(f"Crop processing error: {e}")
+                continue
         
         return jsonify({
             'success': True,
-            'message': 'Dự đoán thành công',
-            'sign_id': class_id,
-            'sign_name_vi': sign_name,
-            'confidence': float(confidence.item()),
-            'guidance_vi': f'AI nhận diện đây là {sign_name}. Hãy tuân thủ luật giao thông nhé!',
-            'audio_file': ''
+            'image_size': [w, h],
+            'detections': detections,
+            'detection_count': len(detections)
         }), 200
-        
+    
     except Exception as e:
-        return jsonify({'success': False, 'error_message': str(e)}), 500
+        print(f"Prediction error: {e}")
+        return jsonify({
+            'success': False,
+            'error_message': str(e)
+        }), 500
 
-@app.route('/api/predict-video', methods=['POST'])
-def predict_video():
+@app.route('/api/predict-crop', methods=['POST'])
+def predict_crop():
     """
-    Tải video để xử lý
-    Mong đợi: Yêu cầu POST với tệp video
-    Trả về: JSON với job_id và trạng thái xử lý
+    Direct classification of a traffic sign crop
+    (Useful for testing classifier alone)
+    
+    Request:
+    - file: cropped sign image
+    
+    Response:
+    {
+        "success": bool,
+        "sign_id": int,
+        "sign_name": str,
+        "confidence": float,
+        "guidance": str,
+        "audio_file": str
+    }
     """
     try:
         if 'file' not in request.files:
-            return jsonify({'success': False, 'error_message': 'Không có tệp nào được cung cấp'}), 400
+            return jsonify({'success': False, 'error_message': 'No file'}), 400
         
-        # TODO: Triển khai tải video và tạo công việc
-        # 1. Lưu video tải lên
-        # 2. Tạo công việc xử lý
-        # 3. Xếp hàng cho xử lý nền
-        # 4. Trả về job_id để thăm dò trạng thái
+        file = request.files['file']
+        image_pil = Image.open(io.BytesIO(file.read())).convert('RGB')
+        
+        # Classify
+        class_id, confidence = classify_crop(image_pil)
+        
+        if class_id == -1:
+            return jsonify({
+                'success': False,
+                'error_message': 'Classification failed'
+            }), 500
+        
+        # Get info
+        sign_info = get_sign_info(class_id)
+        audio_file = generate_audio(sign_info['guidance'], class_id)
         
         return jsonify({
             'success': True,
-            'job_id': f'video_{os.urandom(8).hex()}',
-            'status': 'queued',
-            'message': 'Video được xếp hàng để xử lý'
+            'sign_id': class_id,
+            'sign_name': sign_info['sign_name'],
+            'confidence': confidence,
+            'guidance': sign_info['guidance'],
+            'audio_file': audio_file
         }), 200
-        
-    except Exception as e:
-        return jsonify({'success': False, 'error_message': str(e)}), 500
-
-@app.route('/api/video-status', methods=['GET'])
-def video_status():
-    """
-    Thăm dò trạng thái xử lý video
     
-    Truy vấn: job_id
-    Trả về: JSON với progress, current_frame, detections_count, eta_seconds
-    """
-    try:
-        job_id = request.args.get('job_id')
-        if not job_id:
-            return jsonify({'success': False, 'error_message': 'yêu cầu job_id'}), 400
-        
-        # TODO: Triển khai thăm dò trạng thái
-        # 1. Tra cứu công việc trong cơ sở dữ liệu/hàng đợi
-        # 2. Trả về tiến độ hiện tại
-        # 3. Khi hoàn thành, đặt status='completed'
-        
-        return jsonify({
-            'success': True,
-            'job_id': job_id,
-            'status': 'processing',
-            'progress_percent': 0,
-            'current_frame': 0,
-            'total_frames': 0,
-            'detections_count': 0,
-            'eta_seconds': 0
-        }), 200
-        
     except Exception as e:
-        return jsonify({'success': False, 'error_message': str(e)}), 500
-
-@app.route('/api/video-results', methods=['GET'])
-def video_results():
-    """
-    Lấy kết quả xử lý video
-    
-    Truy vấn: job_id
-    Trả về: JSON với danh sách phát hiện và URL video đầu ra
-    """
-    try:
-        job_id = request.args.get('job_id')
-        if not job_id:
-            return jsonify({'success': False, 'error_message': 'yêu cầu job_id'}), 400
-        
-        # TODO: Triển khai lấy kết quả
-        # 1. Tra cứu công việc đã hoàn thành
-        # 2. Trả về phát hiện từ cơ sở dữ liệu
-        # 3. Cung cấp URL tải xuống cho video được xử lý
-        
         return jsonify({
-            'success': True,
-            'job_id': job_id,
-            'status': 'completed',
-            'detections': [],
-            'output_video_url': '',
-            'processing_time_seconds': 0
-        }), 200
-        
-    except Exception as e:
-        return jsonify({'success': False, 'error_message': str(e)}), 500
+            'success': False,
+            'error_message': str(e)
+        }), 500
 
-# WebSocket endpoint for real-time webcam detections
-# TODO: Implement with Flask-SocketIO in Sprint 3
-# @socketio.on('connect', namespace='/api/webcam-stream')
-# def handle_webcam_connect():
-#     """Handle WebSocket connection and send real-time detections"""
-#     pass
+@app.route('/api/audio/<filename>', methods=['GET'])
+def get_audio(filename):
+    """Download audio file (MP3 or WAV)"""
+    try:
+        audio_path = AUDIO_DIR / filename
+        if not audio_path.exists():
+            return jsonify({'error': 'Audio file not found'}), 404
+        
+        # Determine MIME type based on file extension
+        mime_type = 'audio/mpeg' if filename.endswith('.mp3') else 'audio/wav'
+        
+        return send_file(
+            str(audio_path),
+            mimetype=mime_type,
+            as_attachment=False,  # Inline playback, not download
+            download_name=filename
+        )
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # ============================================
-# CÁC TRÌNH XỬ LÝ LỖI
+# Error Handlers
 # ============================================
 
 @app.errorhandler(404)
 def not_found(error):
-    """Xử lý lỗi 404"""
-    return jsonify({'error': 'Không tìm thấy'}), 404
+    """Handle 404 error"""
+    return jsonify({'error': 'Not found'}), 404
 
 @app.errorhandler(500)
 def internal_error(error):
-    """Xử lý lỗi 500"""
-    return jsonify({'error': 'Lỗi máy chủ nội bộ'}), 500
+    """Handle 500 error"""
+    return jsonify({'error': 'Internal server error'}), 500
 
 # ============================================
-# CHÍNH
+# Main
 # ============================================
 
 if __name__ == '__main__':
-    print("""
-    ╔════════════════════════════════════════╗
-    ║  Hệ thống Nhận diện Biển báo           ║
-    ║  Máy chủ Phát triển Flask              ║
-    ║  http://localhost:5000                 ║
-    ╚════════════════════════════════════════╝
+    print(f"""
+    ╔═══════════════════════════════════════╗
+    ║  Traffic Sign Recognition API v2.0    ║
+    ║  http://localhost:5000                ║
+    ╚═══════════════════════════════════════╝
+    
+    Components:
+    - Detector: {'✓' if detector_params else '✗'}
+    - Classifier: {'✓' if classifier else '✗'}
+    - Audio: ✓ (with TTS API key)
     """)
     
-    # Run development server
     app.run(
         host='0.0.0.0',
         port=5000,
